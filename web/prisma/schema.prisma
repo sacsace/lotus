@@ -1,0 +1,243 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+/// MVS 회사(company)와 1:1에 가깝게 매핑되는 예약 사이트 테넌트.
+model Tenant {
+  id            String         @id @default(cuid())
+  slug          String         @unique
+  nameKo        String
+  mvsEnabled    Boolean        @default(false)
+  mvsCompanyId  Int?
+  address       String?
+  phone         String?
+  email         String?
+  whatsapp      String?
+  mapEmbedUrl   String?
+  lastMvsSyncAt DateTime?
+  createdAt     DateTime       @default(now())
+  updatedAt     DateTime       @updatedAt
+  roomTypes     RoomType[]
+  reservations  Reservation[]
+  inquiries     Inquiry[]
+  adminUsers    AdminUser[]
+  rooms         Room[]
+  guests        Guest[]
+  airportPickups AirportPickup[]
+  siteContents  SiteContent[]
+  diningMenus   DiningMenu[]
+  announcements Announcement[]
+  mediaAssets   MediaAsset[]
+  auditLogs     AuditLog[]
+}
+
+model RoomType {
+  id           String        @id @default(cuid())
+  tenantId     String
+  tenant       Tenant        @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  code         String
+  nameKo       String
+  description  String?
+  features     String?
+  imageUrl     String?
+  inventory    Int           @default(8)
+  baseRate     Int
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+  reservations Reservation[]
+  rooms        Room[]
+
+  @@unique([tenantId, code])
+}
+
+model Room {
+  id                String    @id @default(cuid())
+  tenantId          String
+  tenant            Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  roomNumber        String
+  roomTypeId        String?
+  roomType          RoomType? @relation(fields: [roomTypeId], references: [id])
+  occupancyStatus   String    @default("available")
+  cleaningStatus    String    @default("clean")
+  maintenanceStatus String    @default("ok")
+  housekeepingNotes String?
+  guest             Guest?
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+
+  @@unique([tenantId, roomNumber])
+}
+
+model Guest {
+  id                  String          @id @default(cuid())
+  tenantId            String
+  tenant              Tenant          @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  reservationId       String?         @unique
+  guestName           String
+  companyName         String?
+  roomNumber          String?
+  roomId              String?         @unique
+  room                Room?           @relation(fields: [roomId], references: [id])
+  checkIn             DateTime
+  checkOut            DateTime
+  nationality         String?
+  passportNumber      String?
+  visaNumber          String?
+  phone               String?
+  email               String?
+  airportPickupStatus String          @default("none")
+  mealOption          String?
+  cFormStatus         String          @default("pending")
+  notes               String?
+  mvsGuestId          String?
+  createdAt           DateTime        @default(now())
+  updatedAt           DateTime        @updatedAt
+  airportPickups      AirportPickup[]
+}
+
+model AirportPickup {
+  id           String    @id @default(cuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  guestId      String?
+  guest        Guest?    @relation(fields: [guestId], references: [id])
+  guestName    String
+  flightNumber String?
+  arrivalTime  DateTime?
+  driverName   String?
+  status       String    @default("pending")
+  notes        String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+}
+
+model Reservation {
+  id           String    @id @default(cuid())
+  tenantId     String
+  tenant       Tenant    @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  publicCode   String    @unique
+  guestName    String
+  guestEmail   String
+  guestPhone   String?
+  checkIn      DateTime
+  checkOut     DateTime
+  guests       Int
+  roomTypeId   String
+  roomType     RoomType  @relation(fields: [roomTypeId], references: [id])
+  status       String    @default("pending_payment")
+  totalAmount  Int
+  mvsBookingId String?
+  createdAt    DateTime  @default(now())
+  updatedAt    DateTime  @updatedAt
+  payments     Payment[]
+}
+
+model Payment {
+  id            String      @id @default(cuid())
+  reservationId String
+  reservation   Reservation @relation(fields: [reservationId], references: [id], onDelete: Cascade)
+  provider      String      @default("mock")
+  amount        Int
+  currency      String      @default("INR")
+  status        String      @default("pending")
+  externalId    String?
+  createdAt     DateTime    @default(now())
+}
+
+model Inquiry {
+  id              String   @id @default(cuid())
+  tenantId        String
+  tenant          Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  subject         String
+  body            String
+  contact         String
+  reservationCode String?
+  status          String   @default("new")
+  adminNote       String?
+  createdAt       DateTime @default(now())
+}
+
+model AdminUser {
+  id           String     @id @default(cuid())
+  email        String     @unique
+  passwordHash String
+  name         String
+  role         String     @default("RECEPTION")
+  tenantId     String?
+  tenant       Tenant?    @relation(fields: [tenantId], references: [id])
+  active       Boolean    @default(true)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+  auditLogs    AuditLog[]
+}
+
+model SiteContent {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  key       String
+  value     String
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, key])
+}
+
+model DiningMenu {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  mealType  String
+  menuDate  DateTime
+  items     String
+  updatedAt DateTime @updatedAt
+
+  @@unique([tenantId, mealType, menuDate])
+}
+
+model Announcement {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  title     String
+  body      String
+  active    Boolean  @default(true)
+  createdAt DateTime @default(now())
+}
+
+model MediaAsset {
+  id        String   @id @default(cuid())
+  tenantId  String
+  tenant    Tenant   @relation(fields: [tenantId], references: [id], onDelete: Cascade)
+  url       String
+  category  String
+  alt       String?
+  sortOrder Int      @default(0)
+  createdAt DateTime @default(now())
+}
+
+model AuditLog {
+  id          String     @id @default(cuid())
+  tenantId    String?
+  tenant      Tenant?    @relation(fields: [tenantId], references: [id])
+  adminUserId String?
+  adminUser   AdminUser? @relation(fields: [adminUserId], references: [id])
+  action      String
+  resource    String
+  details     String?
+  ipAddress   String?
+  createdAt   DateTime   @default(now())
+}
+
+model GuestUser {
+  id           String   @id @default(cuid())
+  email        String   @unique
+  passwordHash String?
+  name         String?
+  phone        String?
+  createdAt    DateTime @default(now())
+}

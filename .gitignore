@@ -1,0 +1,33 @@
+# Dependencies & build
+web/node_modules/
+web/.next/
+web/out/
+web/build/
+
+# Environment & secrets
+web/.env
+web/.env.local
+web/.env.*.local
+
+# Local database
+web/prisma/dev.db
+web/prisma/dev.db-journal
+
+# User uploads (managed on server)
+web/public/uploads/
+
+# IDE & OS
+.DS_Store
+*.pem
+Thumbs.db
+
+# Debug logs
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Vercel
+web/.vercel
+
+# TypeScript
+web/*.tsbuildinfo
