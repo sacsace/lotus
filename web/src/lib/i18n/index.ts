@@ -35,9 +35,11 @@ export function translateFeature(label: string, locale: Locale): string {
 export const SERVICE_IDS = [
   "airport",
   "laundry",
+  "netflix",
   "frro",
   "cform",
   "longstay",
+  "homestay",
   "corporate",
   "housekeeping",
   "transport",
@@ -48,9 +50,11 @@ export type ServiceId = (typeof SERVICE_IDS)[number];
 export const SERVICE_ICONS: Record<ServiceId, string> = {
   airport: "✈",
   laundry: "◈",
+  netflix: "▷",
   frro: "▣",
   cform: "▤",
   longstay: "⌂",
+  homestay: "⌂",
   corporate: "◆",
   housekeeping: "✦",
   transport: "→",

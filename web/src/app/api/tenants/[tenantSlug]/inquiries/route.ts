@@ -1,4 +1,5 @@
 import { NextResponse } from "next/server";
+import { sendInquiryMail } from "@/lib/inquiry-mail";
 import { prisma } from "@/lib/prisma";
 import { getTenantBySlug } from "@/lib/tenant";
 
@@ -35,6 +36,17 @@ export async function POST(req: Request, ctx: Ctx) {
       reservationCode: body.reservationCode?.trim() || null,
     },
   });
+
+  try {
+    await sendInquiryMail({
+      subject: row.subject,
+      body: row.body,
+      contact: row.contact,
+      reservationCode: row.reservationCode,
+    });
+  } catch {
+    return NextResponse.json({ id: row.id, error: "메일을 보내지 못했습니다. 잠시 후 다시 시도해 주세요." }, { status: 502 });
+  }
 
   return NextResponse.json({ id: row.id, message: "문의가 접수되었습니다." });
 }

@@ -21,8 +21,23 @@ export default {
         border: "var(--border)",
       },
       fontFamily: {
-        sans: ["var(--font-sans)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
-        display: ["var(--font-sans)", "-apple-system", "BlinkMacSystemFont", "Segoe UI", "sans-serif"],
+        sans: [
+          "var(--font-sans)",
+          "var(--font-korean)",
+          "Apple SD Gothic Neo",
+          "Malgun Gothic",
+          "-apple-system",
+          "BlinkMacSystemFont",
+          "Segoe UI",
+          "sans-serif",
+        ],
+        display: [
+          "var(--font-sans)",
+          "var(--font-korean)",
+          "IBM Plex Sans KR",
+          "Apple SD Gothic Neo",
+          "sans-serif",
+        ],
       },
       borderRadius: {
         apple: "1.125rem",

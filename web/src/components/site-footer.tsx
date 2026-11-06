@@ -1,8 +1,6 @@
 "use client";
 
 import Link from "next/link";
-import { SiteLogo } from "@/components/site-logo";
-import { useI18n } from "@/components/language-provider";
 
 type Props = {
   tenantSlug: string;
@@ -13,61 +11,56 @@ type Props = {
 };
 
 export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Props) {
-  const p = `/${tenantSlug}`;
   const year = new Date().getFullYear();
-  const { t } = useI18n();
+  const p = `/${tenantSlug}`;
+  const links = [
+    { href: p, label: "호텔" },
+    { href: `${p}/rooms`, label: "객실" },
+    { href: `${p}/dining`, label: "다이닝" },
+    { href: `${p}/services`, label: "서비스" },
+    { href: `${p}/contact`, label: "문의" },
+    { href: `${p}/book`, label: "예약" },
+  ];
+  const family = [
+    { href: "https://www.mvsystem.in", label: "업무 통합 시스템 MVS" },
+    { href: "https://www.heresnow.in", label: "GPS 기반 출퇴근 근태 기록 시스템 HeresNow" },
+    { href: "https://www.neocle.in", label: "수출입 전문기업 Neocle" },
+    { href: "https://www.msventures.in", label: "비즈니스 컨설팅 MVS" },
+  ];
 
   return (
-    <footer className="border-t border-border bg-beige">
-      <div className="mx-auto grid max-w-7xl gap-10 px-4 py-16 sm:grid-cols-2 sm:px-8 lg:grid-cols-4">
-        <div>
-          <SiteLogo variant="footer" />
-          <p className="mt-4 text-sm leading-relaxed text-muted">{t.footer.brandDesc}</p>
-        </div>
-        <div>
-          <p className="text-sm font-medium text-foreground">{t.footer.explore}</p>
-          <ul className="mt-4 space-y-2 text-sm text-muted">
-            <li><Link href={`${p}/rooms`} className="transition hover:text-gold">{t.nav.rooms}</Link></li>
-            <li><Link href={`${p}/dining`} className="transition hover:text-gold">{t.nav.dining}</Link></li>
-            <li><Link href={`${p}/services`} className="transition hover:text-gold">{t.nav.services}</Link></li>
-            <li><Link href={`${p}/book`} className="transition hover:text-gold">{t.nav.book}</Link></li>
-          </ul>
-        </div>
-        <FooterContact phone={phone} email={email} address={address} t={t} />
-        <div>
-          <p className="text-sm font-medium text-foreground">{t.footer.operations}</p>
-          <p className="mt-4 text-sm text-muted">{t.footer.operationsDesc}</p>
-          <Link href="/admin/login" className="mt-4 inline-block text-sm text-gold transition hover:underline">
-            {t.footer.staffLogin}
-          </Link>
-        </div>
-      </div>
-      <div className="border-t border-border px-4 py-6 text-center text-xs text-muted">
-        © {year} {brandName}. {t.footer.copyright}
-      </div>
-    </footer>
-  );
-}
-
-function FooterContact({
-  phone,
-  email,
-  address,
-  t,
-}: {
-  phone?: string | null;
-  email?: string | null;
-  address?: string | null;
-  t: ReturnType<typeof useI18n>["t"];
-}) {
-  return (
-    <div>
-      <p className="text-sm font-medium text-foreground">{t.footer.contact}</p>
-      <ul className="mt-4 space-y-2 text-sm text-muted">
-        {phone && <li>{phone}</li>}
-        {email && <li>{email}</li>}
-        {address && <li className="max-w-xs leading-relaxed">{address}</li>}
+    <footer className="px-5 py-10 text-center text-[#1b1d1f]">
+      <ul className="flex flex-wrap justify-center gap-x-5 gap-y-2 text-sm text-[#1b1d1f]/70">
+        {links.map((l) => (
+          <li key={l.href}>
+            <Link href={l.href} className="hover:text-[#1b1d1f]">
+              {l.label}
+            </Link>
+          </li>
+        ))}
       </ul>
-    </div>
+      <p className="mx-auto mt-4 max-w-xl text-sm leading-6 text-[#1b1d1f]/60">
+        {[phone, email, address].filter(Boolean).join(" · ")}
+      </p>
+      <div className="mx-auto mt-8 max-w-3xl">
+        <p className="text-[11px] tracking-[0.18em] text-[#1b1d1f]/45">Family site</p>
+        <ul className="mt-3 flex flex-col items-center gap-2 text-sm text-[#1b1d1f]/70">
+          {family.map((site) => (
+            <li key={site.href}>
+              <a href={site.href} target="_blank" rel="noopener noreferrer" className="hover:text-[#1b1d1f]">
+                {site.label}
+              </a>
+            </li>
+          ))}
+        </ul>
+      </div>
+      <p className="mt-8 text-xs tracking-[0.08em] text-[#1b1d1f]/45">
+        개발{" "}
+        <a href="https://www.msventures.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#1b1d1f]">
+          Minsub Ventures
+        </a>
+      </p>
+      <p className="mt-2 text-xs tracking-[0.18em] text-[#1b1d1f]/45">© {year} {brandName}</p>
+    </footer>
   );
 }

@@ -20,7 +20,8 @@ const SIZES = {
 
 export function SiteLogo({ href, branchName, variant = "header", className = "" }: Props) {
   const { theme } = useTheme();
-  const src = theme === "dark" ? BRAND_LOGOS.dark : BRAND_LOGOS.light;
+  // Header sits on paper, footer sits on a dark bar.
+  const src = variant === "footer" ? BRAND_LOGOS.dark : variant === "header" ? BRAND_LOGOS.light : theme === "dark" ? BRAND_LOGOS.dark : BRAND_LOGOS.light;
   const size = SIZES[variant];
 
   const content = (
@@ -32,6 +33,7 @@ export function SiteLogo({ href, branchName, variant = "header", className = "" 
         height={size.height}
         className={`${size.className} object-contain object-left`}
         priority={variant === "header"}
+        unoptimized
       />
       {branchName && variant === "header" ? (
         <span className="mt-1 text-xs text-muted">{branchName}</span>

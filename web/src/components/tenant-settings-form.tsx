@@ -26,7 +26,7 @@ export function TenantSettingsForm() {
           window.location.href = "/admin/pick-tenant";
           return;
         }
-        setErr(j.error || "??? ???? ?????.");
+        setErr(j.error || "설정을 불러오지 못했습니다.");
         return;
       }
       setTenant(j.tenant);
@@ -42,7 +42,7 @@ export function TenantSettingsForm() {
     try {
       const parsed = companyIdInput.trim() ? Number(companyIdInput) : null;
       if (parsed !== null && (!Number.isFinite(parsed) || parsed <= 0)) {
-        throw new Error("?? ??? 1 ??? ???? ???.");
+        throw new Error("회사 ID는 0보다 큰 숫자여야 합니다.");
       }
       const res = await fetch("/api/admin/tenant-settings", {
         method: "PATCH",
@@ -51,11 +51,11 @@ export function TenantSettingsForm() {
         body: JSON.stringify({ mvsEnabled, mvsCompanyId: parsed }),
       });
       const j = await res.json();
-      if (!res.ok) throw new Error(j.error || "?? ??");
+      if (!res.ok) throw new Error(j.error || "저장에 실패했습니다.");
       setTenant(j.tenant);
-      setMsg("???????.");
+      setMsg("저장했습니다.");
     } catch (e) {
-      setErr(e instanceof Error ? e.message : "??");
+      setErr(e instanceof Error ? e.message : "알 수 없는 오류가 발생했습니다.");
     } finally {
       setSaving(false);
     }
@@ -65,32 +65,32 @@ export function TenantSettingsForm() {
     <div className="apple-card space-y-4 p-6">
       {tenant && (
         <p className="text-sm text-muted">
-          ?? ??: <strong className="text-foreground">{tenant.nameKo}</strong>{" "}
+          현재 지점: <strong className="text-foreground">{tenant.nameKo}</strong>{" "}
           <span className="font-mono text-xs">/{tenant.slug}</span>
         </p>
       )}
       <label className="flex items-center gap-2 text-sm">
         <input type="checkbox" checked={mvsEnabled} onChange={(e) => setMvsEnabled(e.target.checked)} />
-        MVS ?? ??
+        MVS 연동 사용
       </label>
       <div>
-        <label className="block text-sm font-medium">MVS ?? ?? (company_id)</label>
+        <label className="block text-sm font-medium">MVS 회사 ID (company_id)</label>
         <input
           type="number"
           min={1}
           className="apple-input mt-1"
           value={companyIdInput}
           onChange={(e) => setCompanyIdInput(e.target.value)}
-          placeholder={mvsEnabled ? "?: 1" : "????? ?????"}
+          placeholder={mvsEnabled ? "예: 1" : "연동 사용 시 필수"}
         />
       </div>
       <p className="text-xs text-muted">
-        MVS ?? OFF ??? ?? ??? ?? ??? ? ??? ?? DB? ??? ????? ?????.
+        MVS 연동을 끄면 예약 정보가 외부로 전송되지 않고 이 사이트의 데이터베이스에만 저장됩니다.
       </p>
       {err && <p className="text-sm text-red-600">{err}</p>}
       {msg && <p className="text-sm text-emerald-600">{msg}</p>}
       <button type="button" onClick={() => void save()} disabled={saving} className="apple-btn-primary disabled:opacity-60">
-        {saving ? "?? ??" : "?? ??"}
+        {saving ? "저장 중…" : "설정 저장"}
       </button>
     </div>
   );

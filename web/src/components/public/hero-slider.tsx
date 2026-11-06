@@ -1,8 +1,7 @@
 "use client";
 
-import { AnimatePresence, motion } from "framer-motion";
 import { HotelImage } from "@/components/hotel-image";
-import { useEffect, useState } from "react";
+import { useState } from "react";
 
 type Slide = { url: string; alt: string };
 
@@ -10,46 +9,47 @@ export function HeroSlider({ slides, children }: { slides: Slide[]; children?: R
   const [index, setIndex] = useState(0);
   const current = slides[index] ?? slides[0];
 
-  useEffect(() => {
-    if (slides.length <= 1) return;
-    const timer = setInterval(() => setIndex((i) => (i + 1) % slides.length), 6000);
-    return () => clearInterval(timer);
-  }, [slides.length]);
+  if (!current) return null;
+
+  const go = (step: number) => setIndex((i) => (i + step + slides.length) % slides.length);
 
   return (
-    <section className="relative min-h-[60vh] overflow-hidden bg-black">
-      <AnimatePresence mode="wait">
-        <motion.div
-          key={current.url}
-          initial={{ opacity: 0, scale: 1.03 }}
-          animate={{ opacity: 1, scale: 1 }}
-          exit={{ opacity: 0 }}
-          transition={{ duration: 0.9, ease: [0.25, 0.1, 0.25, 1] }}
-          className="absolute inset-0"
-        >
-          <HotelImage src={current.url} alt={current.alt} fill priority variant="hero" sizes="100vw" />
-          <div className="absolute inset-0 bg-gradient-to-b from-black/30 via-black/20 to-black/70" />
-        </motion.div>
-      </AnimatePresence>
-
-      <div className="relative z-10 flex min-h-[60vh] flex-col justify-end px-4 pb-10 pt-16 sm:px-8 lg:px-12">
-        <div className="mx-auto w-full max-w-7xl">{children}</div>
-      </div>
-
+    <section className="relative h-[72vh] min-h-[520px] bg-[#1c1c1c] lg:h-[979px]">
+      <HotelImage
+        key={current.url}
+        src={current.url}
+        alt={current.alt}
+        fill
+        priority
+        variant="hero"
+        sizes="100vw"
+        quality={90}
+        className="hero-photo-in"
+      />
+      <div className="absolute inset-0 bg-black/40" />
+      <div className="relative z-10 flex h-full items-center justify-center px-6 pb-24 text-center">{children}</div>
       {slides.length > 1 && (
-        <div className="absolute bottom-6 left-1/2 z-20 flex -translate-x-1/2 gap-2">
-          {slides.map((_, i) => (
-            <button
-              key={i}
-              type="button"
-              aria-label={`Slide ${i + 1}`}
-              onClick={() => setIndex(i)}
-              className={`h-1 rounded-full transition-all duration-300 ${
-                i === index ? "w-8 bg-white" : "w-4 bg-white/40 hover:bg-white/60"
-              }`}
-            />
-          ))}
-        </div>
+        <>
+          <button
+            type="button"
+            onClick={() => go(-1)}
+            aria-label="이전 사진"
+            className="absolute left-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:left-6"
+          >
+            ‹
+          </button>
+          <button
+            type="button"
+            onClick={() => go(1)}
+            aria-label="다음 사진"
+            className="absolute right-4 top-1/2 z-10 flex h-11 w-11 -translate-y-1/2 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-white sm:right-6"
+          >
+            ›
+          </button>
+          <p className="absolute bottom-24 left-1/2 z-10 -translate-x-1/2 text-xs tabular-nums tracking-widest text-white/80 sm:bottom-28">
+            {index + 1} / {slides.length}
+          </p>
+        </>
       )}
     </section>
   );

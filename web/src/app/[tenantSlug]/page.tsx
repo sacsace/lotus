@@ -1,10 +1,22 @@
 import { HomePage } from "@/components/public/home-page";
 import { getHeroImages } from "@/lib/content";
 import { prisma } from "@/lib/prisma";
+import { PAGE_SEO, buildMetadata } from "@/lib/seo";
 import { getTenantBySlug } from "@/lib/tenant";
-import { notFound } from "next/navigation";
+import { PUBLIC_ROOM_CODES, sortRoomTypes } from "@/lib/lotus-rooms";
+import type { Metadata } from "next";
 
 type Props = { params: Promise<{ tenantSlug: string }> };
+
+export async function generateMetadata({ params }: Props): Promise<Metadata> {
+  const { tenantSlug } = await params;
+  return buildMetadata({
+    title: PAGE_SEO.home.title,
+    description: PAGE_SEO.home.description,
+    path: `/${tenantSlug}`,
+    absoluteTitle: true,
+  });
+}
 
 export default async function TenantHomePage({ params }: Props) {
   const { tenantSlug } = await params;
@@ -14,9 +26,7 @@ export default async function TenantHomePage({ params }: Props) {
   const [heroImages, rooms] = await Promise.all([
     getHeroImages(tenant.id),
     prisma.roomType.findMany({
-      where: { tenantId: tenant.id },
-      orderBy: { baseRate: "asc" },
-      take: 3,
+      where: { tenantId: tenant.id, code: { in: [...PUBLIC_ROOM_CODES] } },
     }),
   ]);
 
@@ -24,8 +34,10 @@ export default async function TenantHomePage({ params }: Props) {
     <HomePage
       tenantSlug={tenant.slug}
       heroImages={heroImages}
-      rooms={rooms}
+      rooms={sortRoomTypes(rooms)}
       address={tenant.address}
+      phone={tenant.phone}
+      email={tenant.email}
     />
   );
 }

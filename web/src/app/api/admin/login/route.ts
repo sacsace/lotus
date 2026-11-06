@@ -6,31 +6,31 @@ import { isAdminRole } from "@/lib/rbac";
 import { logAdminAction } from "@/lib/audit";
 
 export async function POST(req: Request) {
-  let body: { email?: string; password?: string };
+  let body: { id?: string; email?: string; password?: string };
   try {
     body = await req.json();
   } catch {
     return NextResponse.json({ error: "JSON required" }, { status: 400 });
   }
 
-  const email = body.email?.trim().toLowerCase();
+  const id = (body.id ?? body.email)?.trim().toLowerCase();
   const password = body.password;
 
-  if (!email || !password) {
-    return NextResponse.json({ error: "Email and password required" }, { status: 400 });
+  if (!id || !password) {
+    return NextResponse.json({ error: "ID and password required" }, { status: 400 });
   }
 
-  let user = await prisma.adminUser.findUnique({ where: { email } });
+  let user = await prisma.adminUser.findUnique({ where: { email: id } });
 
   if (!user) {
     const legacy = process.env.LOTUS_ADMIN_PASSWORD;
-    if (legacy && password === legacy && email === "admin@hotellotus.in") {
+    if (legacy && password === legacy && id === "root") {
       const hash = await bcrypt.hash(legacy, 10);
       user = await prisma.adminUser.upsert({
-        where: { email },
-        update: { passwordHash: hash, active: true },
+        where: { email: "root" },
+        update: { passwordHash: hash, active: true, role: "SUPER_ADMIN" },
         create: {
-          email,
+          email: "root",
           passwordHash: hash,
           name: "Super Admin",
           role: "SUPER_ADMIN",

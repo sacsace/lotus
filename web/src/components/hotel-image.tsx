@@ -15,9 +15,9 @@ type Props = ImageProps & {
   variant?: HotelPhotoVariant;
 };
 
-export function HotelImage({ variant = "card", className = "", ...props }: Props) {
+export function HotelImage({ variant = "card", className = "", alt = "", ...props }: Props) {
   const base = VARIANT_CLASS[variant];
-  return <Image {...props} className={className ? `${base} ${className}` : base} />;
+  return <Image {...props} alt={alt} className={className ? `${base} ${className}` : base} />;
 }
 
 export function HotelPhotoFrame({

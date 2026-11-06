@@ -1,6 +1,7 @@
 import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { HOTEL_IMAGES } from "../src/lib/hotel-images";
+import { LOTUS_ROOM_NUMBERS } from "../src/lib/lotus-rooms";
 
 const prisma = new PrismaClient();
 
@@ -8,29 +9,9 @@ const HERO_IMAGES = HOTEL_IMAGES.hero;
 
 const roomSeeds = [
   {
-    code: "S",
-    nameKo: "S Room (Single)",
-    description:
-      "1인 출장객을 위한 아늑한 객실 (Twin Bed). 에어컨, 전용 욕실, 업무용 책상, TV를 제공하며 매일 청소와 무료 세탁 서비스가 포함됩니다.",
-    features: JSON.stringify([
-      "1 Twin Bed",
-      "Air conditioning",
-      "Private bathroom",
-      "Smart TV",
-      "Free Wi-Fi",
-      "Work desk",
-      "Daily housekeeping",
-      "Free laundry",
-    ]),
-    imageUrl: HOTEL_IMAGES.rooms.S,
-    inventory: 12,
-    baseRate: 4500,
-  },
-  {
     code: "M",
     nameKo: "M Room (Standard Double)",
-    description:
-      "커플 또는 비즈니스 출장에 적합한 중형 객실 (Queen Bed). 시티뷰 창과 모던한 인테리어, 매일 청소·무료 세탁·룸서비스를 제공합니다.",
+    description: "침실과 화장실로 구성되어 있습니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다.",
     features: JSON.stringify([
       "1 Queen Bed",
       "Air conditioning",
@@ -44,14 +25,13 @@ const roomSeeds = [
       "Room service",
     ]),
     imageUrl: HOTEL_IMAGES.rooms.M,
-    inventory: 8,
+    inventory: 7,
     baseRate: 6800,
   },
   {
     code: "B",
     nameKo: "B Room (Deluxe Suite)",
-    description:
-      "넓은 공간과 거실을 갖춘 대형 디럭스 스위트 (King Bed). 장기 체류·가족 단위 투숙에 최적이며 무료 세탁, 룸서비스, 데일리 하우스키핑이 포함됩니다.",
+    description: "거실, 침실, 화장실로 구성되어 있습니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다.",
     features: JSON.stringify([
       "1 King Bed",
       "Living area",
@@ -67,13 +47,13 @@ const roomSeeds = [
       "Long-stay support",
     ]),
     imageUrl: HOTEL_IMAGES.rooms.B,
-    inventory: 4,
+    inventory: 15,
     baseRate: 9500,
   },
 ] as const;
 
 const ROOM_CODE_MIGRATION: Record<string, string> = {
-  STANDARD: "S",
+  STANDARD: "M",
   DELUXE: "M",
   SUITE: "B",
 };
@@ -84,6 +64,7 @@ async function seedTenant(
   mvsEnabled: boolean,
   mvsCompanyId: number | null,
   contact: { address: string; phone: string; email: string; whatsapp: string },
+  roomsByType?: Record<string, readonly string[]>,
 ) {
   const tenant = await prisma.tenant.upsert({
     where: { slug },
@@ -122,18 +103,49 @@ async function seedTenant(
     });
   }
 
+  if (roomsByType?.S) {
+    await prisma.roomType.upsert({
+      where: { tenantId_code: { tenantId: tenant.id, code: "S" } },
+      update: { nameKo: "S Room", inventory: roomsByType.S.length, imageUrl: HOTEL_IMAGES.rooms.S },
+      create: {
+        tenantId: tenant.id,
+        code: "S",
+        nameKo: "S Room",
+        description: "1실입니다.",
+        features: "[]",
+        imageUrl: HOTEL_IMAGES.rooms.S,
+        inventory: roomsByType.S.length,
+        baseRate: 0,
+      },
+    });
+  }
+
   const roomTypes = await prisma.roomType.findMany({ where: { tenantId: tenant.id } });
   const typeByCode = Object.fromEntries(roomTypes.map((t) => [t.code, t]));
 
-  const roomNumbers = [
-    { num: "101", type: "S", occ: "occupied", clean: "clean" },
-    { num: "102", type: "S", occ: "available", clean: "clean" },
-    { num: "103", type: "S", occ: "occupied", clean: "dirty" },
-    { num: "201", type: "M", occ: "available", clean: "clean" },
-    { num: "202", type: "M", occ: "occupied", clean: "clean" },
-    { num: "301", type: "B", occ: "available", clean: "in_progress" },
-    { num: "302", type: "B", occ: "reserved", clean: "clean" },
-  ];
+  const roomNumbers = roomsByType
+    ? Object.entries(roomsByType).flatMap(([type, numbers]) => numbers.map((num) => ({ num, type, occ: "available", clean: "clean" })))
+    : [
+        { num: "101", type: "M", occ: "occupied", clean: "clean" },
+        { num: "102", type: "M", occ: "available", clean: "clean" },
+        { num: "103", type: "M", occ: "occupied", clean: "dirty" },
+        { num: "201", type: "M", occ: "available", clean: "clean" },
+        { num: "202", type: "M", occ: "occupied", clean: "clean" },
+        { num: "301", type: "B", occ: "available", clean: "in_progress" },
+        { num: "302", type: "B", occ: "reserved", clean: "clean" },
+      ];
+
+  if (roomsByType) {
+    const keep = new Set(roomNumbers.map((room) => room.num));
+    const stale = await prisma.room.findMany({
+      where: { tenantId: tenant.id, roomNumber: { notIn: [...keep] } },
+      select: { id: true },
+    });
+    if (stale.length) {
+      await prisma.guest.updateMany({ where: { roomId: { in: stale.map((room) => room.id) } }, data: { roomId: null } });
+      await prisma.room.deleteMany({ where: { id: { in: stale.map((room) => room.id) } } });
+    }
+  }
 
   for (const rn of roomNumbers) {
     await prisma.room.upsert({
@@ -153,6 +165,12 @@ async function seedTenant(
     });
   }
 
+  for (const code of Object.keys(typeByCode)) {
+    const count = roomNumbers.filter((room) => room.type === code).length;
+    if (!count || !typeByCode[code]) continue;
+    await prisma.roomType.update({ where: { id: typeByCode[code].id }, data: { inventory: count } });
+  }
+
   const today = new Date();
   today.setHours(0, 0, 0, 0);
   const tomorrow = new Date(today);
@@ -164,7 +182,7 @@ async function seedTenant(
     {
       guestName: "Kim Min-ho",
       companyName: "Samsung India",
-      roomNumber: "101",
+      roomNumber: roomsByType?.M?.[0] ?? "101",
       checkIn: today,
       checkOut: nextWeek,
       nationality: "Korean",
@@ -179,7 +197,7 @@ async function seedTenant(
     {
       guestName: "Park Ji-yeon",
       companyName: "LG Electronics",
-      roomNumber: "202",
+      roomNumber: roomsByType?.M?.[1] ?? "202",
       checkIn: today,
       checkOut: tomorrow,
       nationality: "Korean",
@@ -265,23 +283,31 @@ async function seedTenant(
 
 async function seedAdminUsers(tenantId: string) {
   const hash = await bcrypt.hash(process.env.LOTUS_ADMIN_PASSWORD || "admin123", 10);
+  const legacy = await prisma.adminUser.findUnique({ where: { email: "admin@hotellotus.in" } });
+  if (legacy) {
+    await prisma.adminUser.update({
+      where: { id: legacy.id },
+      data: { email: "root", passwordHash: hash, name: "Super Admin", role: "SUPER_ADMIN", tenantId, active: true },
+    });
+  }
   await prisma.adminUser.upsert({
-    where: { email: "admin@hotellotus.in" },
+    where: { email: "root" },
     update: { passwordHash: hash, name: "Super Admin", role: "SUPER_ADMIN", tenantId, active: true },
     create: {
-      email: "admin@hotellotus.in",
+      email: "root",
       passwordHash: hash,
       name: "Super Admin",
       role: "SUPER_ADMIN",
       tenantId,
     },
   });
+  const receptionHash = await bcrypt.hash("admin123", 10);
   await prisma.adminUser.upsert({
     where: { email: "reception@hotellotus.in" },
-    update: { passwordHash: hash, name: "Reception Desk", role: "RECEPTION", tenantId, active: true },
+    update: { name: "Reception Desk", role: "RECEPTION", tenantId, active: true },
     create: {
       email: "reception@hotellotus.in",
-      passwordHash: hash,
+      passwordHash: receptionHash,
       name: "Reception Desk",
       role: "RECEPTION",
       tenantId,
@@ -301,6 +327,7 @@ async function main() {
       email: "hello@hotellotus.in",
       whatsapp: "+918050376600",
     },
+    LOTUS_ROOM_NUMBERS,
   );
 
   await seedTenant("lotus-gangnam", "Lotus Gangnam (MVS example)", true, 1, {
@@ -319,7 +346,7 @@ async function main() {
 
   await seedAdminUsers(india.id);
   console.log("Seeded lotus-india (primary), lotus-gangnam, lotus-busan");
-  console.log("Admin login: admin@hotellotus.in / LOTUS_ADMIN_PASSWORD (default admin123)");
+  console.log("Admin login: root / LOTUS_ADMIN_PASSWORD");
 }
 
 main()

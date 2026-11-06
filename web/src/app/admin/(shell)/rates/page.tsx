@@ -8,8 +8,8 @@ export default async function AdminRatesPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Rates</h1>
-      <p className="mt-2 text-sm text-muted">{tenant.nameKo} room pricing and inventory.</p>
+      <h1 className="text-2xl font-semibold tracking-tight">요금 관리</h1>
+      <p className="mt-2 text-sm text-muted">{tenant.nameKo}의 객실 요금과 재고를 관리합니다.</p>
       <div className="mt-8">
         <RatesEditorLazy />
       </div>

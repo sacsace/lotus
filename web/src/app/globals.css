@@ -3,51 +3,56 @@
 @tailwind utilities;
 
 :root {
-  --background: #ffffff;
-  --foreground: #1d1d1f;
-  --beige: #f5f5f7;
-  --charcoal: #1d1d1f;
-  --gold: #0071e3;
-  --gold-light: #0077ed;
-  --muted: #6e6e73;
-  --card: #ffffff;
-  --border: rgba(0, 0, 0, 0.08);
-  --shadow-soft: 0 2px 16px rgba(0, 0, 0, 0.06);
-  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.08);
-  --glass: rgba(255, 255, 255, 0.72);
+  --font-sans: "Inter";
+  --font-korean: "IBM Plex Sans KR";
 }
 
+:root,
 .dark {
-  --background: #000000;
-  --foreground: #f5f5f7;
-  --beige: #1c1c1e;
-  --charcoal: #f5f5f7;
-  --gold: #2997ff;
-  --gold-light: #409cff;
-  --muted: #a1a1a6;
-  --card: #1c1c1e;
-  --border: rgba(255, 255, 255, 0.12);
-  --shadow-soft: 0 2px 16px rgba(0, 0, 0, 0.4);
-  --shadow-medium: 0 8px 32px rgba(0, 0, 0, 0.5);
-  --glass: rgba(28, 28, 30, 0.72);
+  --background: #ffffff;
+  --foreground: #1c1c1c;
+  --beige: #f6f4f1;
+  --charcoal: #1c1c1c;
+  --gold: #1c1c1c;
+  --gold-light: #3a342e;
+  --muted: #6d675f;
+  --card: #ffffff;
+  --border: #e4dfd8;
+  --shadow-soft: none;
+  --shadow-medium: none;
+  --glass: #ffffff;
 }
 
 html {
   scroll-behavior: smooth;
 }
 
+#about,
+#rooms,
+#dining,
+#services,
+#contact {
+  scroll-margin-top: 5.5rem;
+}
+
 body {
   color: var(--foreground);
   background: var(--background);
-  font-family: var(--font-sans), -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: var(--font-sans), var(--font-korean), "Apple SD Gothic Neo", "Malgun Gothic",
+    -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
-  letter-spacing: -0.01em;
+  letter-spacing: -0.02em;
+}
+
+.stroke-type {
+  color: transparent;
+  -webkit-text-stroke: 1.5px currentColor;
 }
 
 @layer components {
   .apple-eyebrow {
-    @apply text-sm font-medium text-gold;
+    @apply text-sm text-muted;
   }
 
   .apple-headline {
@@ -59,15 +64,15 @@ body {
   }
 
   .apple-card {
-    @apply rounded-2xl bg-card shadow-luxury ring-1 ring-black/[0.04] dark:ring-white/[0.08];
+    @apply rounded-md border border-border bg-card;
   }
 
   .apple-btn-primary {
-    @apply inline-flex items-center justify-center rounded-full bg-gold px-6 py-2.5 text-sm font-medium text-white transition duration-200 hover:bg-gold-light active:scale-[0.98];
+    @apply inline-flex items-center justify-center border border-charcoal bg-charcoal px-4 py-2.5 text-sm text-white transition-colors hover:bg-[#3f3a34] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal;
   }
 
   .apple-btn-secondary {
-    @apply inline-flex items-center justify-center rounded-full border border-border bg-card px-6 py-2.5 text-sm font-medium text-foreground transition duration-200 hover:bg-beige active:scale-[0.98];
+    @apply inline-flex items-center justify-center border border-charcoal bg-transparent px-4 py-2.5 text-sm text-foreground transition-colors hover:bg-beige focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-charcoal;
   }
 
   .apple-segmented {
@@ -83,7 +88,7 @@ body {
   }
 
   .apple-input {
-    @apply w-full rounded-xl border border-border bg-card px-4 py-3 text-sm text-foreground outline-none transition focus:border-gold;
+    @apply w-full rounded-md border border-border bg-card px-4 py-3 text-sm text-foreground outline-none transition focus:border-gold;
   }
 
   .apple-input::placeholder {
@@ -102,9 +107,6 @@ body {
   .hotel-photo {
     @apply h-full w-full object-cover;
     object-position: center center;
-    filter: contrast(1.07) saturate(1.06) brightness(1.03);
-    transform: scale(1.03);
-    transform-origin: center center;
   }
 
   .hotel-photo-hero {
@@ -129,6 +131,22 @@ body {
 
   .hotel-photo-food {
     object-position: center center;
+  }
+
+  .section-kicker {
+    @apply text-sm text-[#6b645c];
+  }
+
+  .section-title {
+    @apply text-3xl font-medium leading-snug tracking-normal text-[#1c1a17] sm:text-4xl;
+  }
+
+  .landing-button {
+    @apply inline-flex items-center justify-center border border-[#171717] bg-[#171717] px-4 py-2.5 text-sm text-[#f3f0ea] transition-colors hover:bg-[#3f3a34] focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-[#171717];
+  }
+
+  .landing-button-light {
+    @apply border-[#171717] bg-transparent text-[#171717] hover:bg-[#e7e1d6];
   }
 }
 
@@ -156,8 +174,6 @@ body {
 
   .glass-nav {
     background: var(--glass);
-    backdrop-filter: saturate(180%) blur(20px);
-    -webkit-backdrop-filter: saturate(180%) blur(20px);
   }
 
   .photo-grid {
@@ -173,6 +189,32 @@ body {
   to {
     opacity: 1;
     transform: translateY(0);
+  }
+}
+
+@keyframes photo-settle {
+  from { opacity: 0.35; }
+  to { opacity: 1; }
+}
+
+.hero-photo-in {
+  animation: photo-settle 0.45s ease;
+}
+
+.editorial-arrow {
+  display: inline-block;
+  transition: transform 0.2s ease;
+}
+
+.group:hover .editorial-arrow {
+  transform: translate(3px, -3px);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .hero-photo-in,
+  .editorial-arrow {
+    animation: none;
+    transition: none;
   }
 }
 

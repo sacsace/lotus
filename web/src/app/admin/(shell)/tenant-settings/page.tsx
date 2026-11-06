@@ -8,8 +8,8 @@ export default async function AdminTenantSettingsPage() {
 
   return (
     <div>
-      <h1 className="text-2xl font-semibold tracking-tight">Tenant Settings</h1>
-      <p className="mt-2 text-sm text-muted">MVS integration and company mapping for {tenant.nameKo}.</p>
+      <h1 className="text-2xl font-semibold tracking-tight">지점 설정</h1>
+      <p className="mt-2 text-sm text-muted">{tenant.nameKo}의 MVS 연동 및 회사 정보 설정입니다.</p>
       <div className="mt-8 max-w-xl">
         <TenantSettingsFormLazy />
       </div>

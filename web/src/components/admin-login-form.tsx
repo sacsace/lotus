@@ -6,7 +6,7 @@ import { useRouter } from "next/navigation";
 type TenantBrief = { slug: string; nameKo: string };
 
 export function AdminLoginForm() {
-  const [email, setEmail] = useState("admin@hotellotus.in");
+  const [id, setId] = useState("");
   const [password, setPassword] = useState("");
   const [err, setErr] = useState<string | null>(null);
   const router = useRouter();
@@ -17,7 +17,7 @@ export function AdminLoginForm() {
     const res = await fetch("/api/admin/login", {
       method: "POST",
       headers: { "Content-Type": "application/json" },
-      body: JSON.stringify({ email, password }),
+      body: JSON.stringify({ id, password }),
     });
     if (!res.ok) {
       const j = await res.json().catch(() => ({}));
@@ -44,12 +44,12 @@ export function AdminLoginForm() {
   return (
     <form onSubmit={onSubmit} className="mt-8 space-y-4">
       <input
-        type="email"
+        type="text"
         className="w-full rounded-lg border border-beige bg-card px-4 py-3 text-sm"
-        placeholder="Email"
-        value={email}
-        onChange={(e) => setEmail(e.target.value)}
-        autoComplete="email"
+        placeholder="ID"
+        value={id}
+        onChange={(e) => setId(e.target.value)}
+        autoComplete="username"
       />
       <input
         type="password"
@@ -63,7 +63,6 @@ export function AdminLoginForm() {
       <button type="submit" className="w-full rounded-full bg-charcoal py-3 text-sm font-medium text-white dark:bg-gold dark:text-charcoal">
         Sign in
       </button>
-      <p className="text-center text-xs text-muted">Default: admin@hotellotus.in · LOTUS_ADMIN_PASSWORD</p>
     </form>
   );
 }

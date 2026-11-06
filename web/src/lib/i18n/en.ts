@@ -82,11 +82,15 @@ export const en: Dictionary = {
     items: {
       airport: {
         title: "Airport Pickup",
-        desc: "Flight-tracked transfers with professional drivers and direct hotel coordination.",
+        desc: "USD 27 per vehicle. Share your flight and arrival time, and we will bring you to the hotel.",
       },
       laundry: {
         title: "Laundry",
-        desc: "Daily laundry and dry-cleaning support for business and long-stay guests.",
+        desc: "Laundry is included in the stay. Dry cleaning is not available.",
+      },
+      netflix: {
+        title: "Netflix",
+        desc: "You can watch Netflix in the room.",
       },
       frro: {
         title: "FRRO Support",
@@ -99,6 +103,10 @@ export const en: Dictionary = {
       longstay: {
         title: "Long-Stay Support",
         desc: "Extended stay packages with housekeeping and corporate billing.",
+      },
+      homestay: {
+        title: "Homestay",
+        desc: "You can request a homestay along with a hotel stay. Ask the front desk about dates.",
       },
       corporate: {
         title: "Corporate Guest Support",
@@ -206,8 +214,9 @@ export const en: Dictionary = {
     },
   ],
   meta: {
-    title: "Lotus Korean Hotel | Korean Business Hotel in India",
-    description: "Korean business hotel in Bengaluru, India. Book rooms, dining, airport pickup, and long-stay packages.",
+    title: "Lotus Korean Hotel | Korean Business Hotel in Bengaluru",
+    description:
+      "Korean-style business hotel in Bengaluru. Rooms, Korean breakfast and dinner, airport pickup, and long-stay support near Doddanekkundi and Whitefield.",
   },
   pageLoader: "Loading…",
   root: {

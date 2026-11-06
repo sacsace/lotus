@@ -1,4 +1,4 @@
-﻿/**
+/**
  * MVS integration — central operational system client.
  */
 

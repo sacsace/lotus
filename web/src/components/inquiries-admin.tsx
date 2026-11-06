@@ -27,11 +27,11 @@ export function InquiriesAdmin() {
         window.location.href = "/admin/pick-tenant";
         return;
       }
-      setErr(j.error || "???? ??");
+      setErr(j.error || "문의를 불러오지 못했습니다.");
       return;
     }
     setRows(j.inquiries ?? []);
-    if (j.tenant) setTenantLabel(`${j.tenant.nameKo} ? /${j.tenant.slug}`);
+    if (j.tenant) setTenantLabel(`${j.tenant.nameKo} · /${j.tenant.slug}`);
   }
 
   useEffect(() => {
@@ -48,7 +48,7 @@ export function InquiriesAdmin() {
     });
     const j = await res.json();
     if (!res.ok) {
-      setErr(j.error || "?? ??");
+      setErr(j.error || "수정에 실패했습니다.");
       return;
     }
     setRows((prev) => prev.map((r) => (r.id === id ? j.inquiry : r)));
@@ -56,7 +56,7 @@ export function InquiriesAdmin() {
 
   return (
     <div className="space-y-4">
-      {tenantLabel && <p className="text-sm text-muted">?? ??: {tenantLabel}</p>}
+      {tenantLabel && <p className="text-sm text-muted">현재 지점: {tenantLabel}</p>}
       {err && <p className="text-sm text-red-600">{err}</p>}
       <ul className="space-y-4">
         {rows.map((r) => (
@@ -64,18 +64,22 @@ export function InquiriesAdmin() {
             <div className="flex flex-wrap items-start justify-between gap-2">
               <div>
                 <p className="font-medium">{r.subject}</p>
-                <p className="text-xs text-muted">{new Date(r.createdAt).toLocaleString("ko-KR")}</p>
+                <p className="text-xs text-muted">{new Date(r.createdAt).toLocaleString()}</p>
               </div>
-              <select className="apple-input w-auto py-1.5" value={r.status} onChange={(e) => void patch(r.id, e.target.value, r.adminNote || "")}>
-                <option value="new">new</option>
-                <option value="in_progress">in_progress</option>
-                <option value="closed">closed</option>
+              <select
+                className="apple-input w-auto py-1.5"
+                value={r.status}
+                onChange={(e) => void patch(r.id, e.target.value, r.adminNote || "")}
+              >
+                <option value="new">신규</option>
+                <option value="in_progress">처리 중</option>
+                <option value="closed">처리 완료</option>
               </select>
             </div>
             <p className="mt-2 whitespace-pre-wrap text-muted">{r.body}</p>
-            <p className="mt-2 text-xs text-muted">???: {r.contact}</p>
-            {r.reservationCode && <p className="text-xs text-muted">????: {r.reservationCode}</p>}
-            <label className="mt-3 block text-xs font-medium text-muted">??? ??</label>
+            <p className="mt-2 text-xs text-muted">연락처: {r.contact}</p>
+            {r.reservationCode && <p className="text-xs text-muted">예약번호: {r.reservationCode}</p>}
+            <label className="mt-3 block text-xs font-medium text-muted">관리자 메모</label>
             <textarea
               className="apple-input mt-1 text-xs"
               rows={2}

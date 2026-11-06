@@ -2,7 +2,7 @@
 
 import { useEffect, useState } from "react";
 
-type Tenant = { id: string; slug: string; nameKo: string; mvsEnabled: boolean };
+type Tenant = { slug: string; nameKo: string; mvsEnabled: boolean };
 
 export function TenantPicker() {
   const [tenants, setTenants] = useState<Tenant[]>([]);
@@ -51,7 +51,7 @@ export function TenantPicker() {
       ) : (
         <ul className="mt-8 space-y-3">
           {tenants.map((t) => (
-            <li key={t.id}>
+            <li key={t.slug}>
               <button
                 type="button"
                 onClick={() => void select(t.slug)}

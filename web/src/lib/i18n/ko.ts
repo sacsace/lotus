@@ -80,11 +80,15 @@ export const ko = {
     items: {
       airport: {
         title: "공항 픽업",
-        desc: "항공편 추적, 전문 기사, 호텔 직접 체크인 연계가 포함된 공항 픽업 서비스입니다.",
+        desc: "차량 한 대당 USD 27입니다. 항공편과 도착 시간을 알려 주시면 호텔까지 이동합니다.",
       },
       laundry: {
         title: "세탁",
-        desc: "비즈니스·장기 숙박 고객을 위한 일일 세탁 및 드라이클리닝 지원입니다.",
+        desc: "기본 숙박에 세탁이 포함됩니다. 드라이클리닝은 하지 않습니다.",
+      },
+      netflix: {
+        title: "넷플릭스",
+        desc: "객실에서 넷플릭스를 볼 수 있습니다.",
       },
       frro: {
         title: "FRRO 지원",
@@ -97,6 +101,10 @@ export const ko = {
       longstay: {
         title: "장기 숙박",
         desc: "하우스키핑과 기업 청구가 포함된 장기 숙박 패키지입니다.",
+      },
+      homestay: {
+        title: "홈스테이",
+        desc: "호텔 숙박과 함께 홈스테이를 요청할 수 있습니다. 일정은 프런트에 문의해 주세요.",
       },
       corporate: {
         title: "기업 고객",
@@ -146,7 +154,7 @@ export const ko = {
   booking: {
     step1: "1. 일정·객실",
     step2: "2. 예약자",
-    step3: "3. 결제(데모)",
+    step3: "3. 메일 요청",
     checkIn: "체크인",
     checkOut: "체크아웃",
     reloadAvail: "가용 객실 다시 조회",
@@ -155,11 +163,11 @@ export const ko = {
     guests: "인원",
     selectRoom: "객실 타입을 선택하세요.",
     noRoom: "선택한 객실이 없습니다.",
-    guestNote: "로그인 없이 예약합니다. 예약 확인은 예약번호 + 이메일로 가능합니다.",
+    guestNote: "아래 내용을 호텔 메일로 보냅니다. 답장이 오기 전에는 예약이 완료된 것이 아닙니다. 고등학생·대학생 특별 할인이 있으면 신분을 선택해 주세요.",
     name: "성명",
     email: "이메일",
     phone: "휴대폰 (선택)",
-    create: "예약 생성",
+    create: "예약 요청 보내기",
     reservationCode: "예약번호 {code}",
     payNote: "데모 환경에서는 아래 버튼으로 결제 완료를 시뮬레이션합니다. 실제 서비스에서는 PG 결제창으로 연결됩니다.",
     payMock: "결제 완료 시뮬레이션",
@@ -178,7 +186,7 @@ export const ko = {
   pages: {
     book: {
       title: "온라인 예약 — {name}",
-      subtitle: "회원가입 없이 진행할 수 있습니다. 결제는 데모 버튼으로 시뮬레이션됩니다.",
+      subtitle: "내용을 작성하면 호텔 메일로 전달됩니다. 답장이 오기 전에는 예약이 완료된 것이 아닙니다.",
     },
     myReservation: {
       title: "내 예약 — {name}",
@@ -203,8 +211,9 @@ export const ko = {
     },
   ],
   meta: {
-    title: "Lotus Korean Hotel | 인도 한국식 비즈니스 호텔",
-    description: "인도 벵갈루루 한국 비즈니스 호텔. 객실, 다이닝, 공항 픽업, 장기 숙박 예약.",
+    title: "Lotus Korean Hotel | 인도에서 만나는 한국식 비즈니스 호텔",
+    description:
+      "벵갈루루 한국식 비즈니스 호텔. 편안한 객실, 한식 조식과 석식, 공항 픽업, 장기 체류 지원을 한곳에서.",
   },
   pageLoader: "로딩…",
   root: {

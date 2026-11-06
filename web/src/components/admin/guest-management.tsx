@@ -69,7 +69,7 @@ export function GuestManagement() {
         <button
           type="button"
           onClick={() => { window.location.href = "/api/admin/guests/export"; }}
-          className="rounded-lg bg-gold px-4 py-2 text-sm font-medium text-charcoal"
+          className="rounded-lg bg-charcoal px-4 py-2 text-sm font-medium text-white"
         >
           Export Excel (CSV)
         </button>

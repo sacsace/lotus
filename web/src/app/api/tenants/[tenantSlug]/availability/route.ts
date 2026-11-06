@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { parseDateOnly, nightsBetween } from "@/lib/dates";
 import { availableUnitsForType } from "@/lib/availability";
 import { fetchMvsAvailability } from "@/lib/mvs";
+import { PUBLIC_ROOM_CODES, sortRoomTypes } from "@/lib/lotus-rooms";
 import { getTenantBySlug } from "@/lib/tenant";
 
 type Ctx = { params: Promise<{ tenantSlug: string }> };
@@ -33,10 +34,11 @@ export async function GET(req: Request, ctx: Ctx) {
     mvsCompanyId: tenant.mvsCompanyId,
   });
   const nights = nightsBetween(checkIn, checkOut);
-  const types = await prisma.roomType.findMany({
-    where: { tenantId: tenant.id },
-    orderBy: { baseRate: "asc" },
-  });
+  const types = sortRoomTypes(
+    await prisma.roomType.findMany({
+      where: { tenantId: tenant.id, code: { in: [...PUBLIC_ROOM_CODES] } },
+    }),
+  );
 
   const rooms = await Promise.all(
     types.map(async (t) => {

@@ -1,13 +1,10 @@
 "use client";
 
 import Link from "next/link";
-import { HotelImage, HotelPhotoFrame } from "@/components/hotel-image";
-import { motion } from "framer-motion";
-import { HeroSlider } from "@/components/public/hero-slider";
-import { MotionCard, MotionSection } from "@/components/public/motion-section";
-import { formatMsg, useI18n } from "@/components/language-provider";
+import { useEffect, useState } from "react";
+import { HotelImage } from "@/components/hotel-image";
+import { BreakfastSlider } from "@/components/public/breakfast-slider";
 import { HOTEL_IMAGES, DEFAULT_ROOM_IMAGE } from "@/lib/hotel-images";
-import type { Dictionary } from "@/lib/i18n";
 
 type RoomPreview = {
   id: string;
@@ -22,189 +19,279 @@ type Props = {
   heroImages: { url: string; alt: string }[];
   rooms: RoomPreview[];
   address?: string | null;
+  phone?: string | null;
+  email?: string | null;
 };
 
-export function HomePage({ tenantSlug, heroImages, rooms, address }: Props) {
-  const p = `/${tenantSlug}`;
-  const { t } = useI18n();
+const COUNTS = ["1", "2", "3", "4+"] as const;
+
+export function HomePage({ tenantSlug, heroImages, rooms, address, phone, email }: Props) {
+  const slides = heroImages.length ? heroImages : [...HOTEL_IMAGES.hero];
+  const [heroIndex, setHeroIndex] = useState(0);
+  const [heroPaused, setHeroPaused] = useState(false);
+  const roomCards = rooms.length
+    ? rooms
+    : [
+        { id: "m", nameKo: "M Room", description: "침실과 화장실로 구성되어 있습니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다.", imageUrl: HOTEL_IMAGES.rooms.M, baseRate: 0 },
+        { id: "b", nameKo: "B Room", description: "거실, 침실, 화장실로 구성되어 있습니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다.", imageUrl: HOTEL_IMAGES.rooms.B, baseRate: 0 },
+      ];
+  const base = `/${tenantSlug}`;
+  const today = new Date().toISOString().slice(0, 10);
+  const tomorrow = new Date(Date.now() + 86400000).toISOString().slice(0, 10);
+  const [checkIn, setCheckIn] = useState(today);
+  const [checkOut, setCheckOut] = useState(tomorrow);
+  const [guests, setGuests] = useState<(typeof COUNTS)[number]>("2");
+  const [roomCount, setRoomCount] = useState<(typeof COUNTS)[number]>("1");
+
+  const goHero = (step: number) => setHeroIndex((i) => (i + step + slides.length) % slides.length);
+
+  useEffect(() => {
+    if (slides.length < 2 || heroPaused) return;
+    if (window.matchMedia("(prefers-reduced-motion: reduce)").matches) return;
+    const id = window.setInterval(() => goHero(1), 6500);
+    return () => window.clearInterval(id);
+  }, [heroPaused, slides.length]);
+
+  const goBook = () => {
+    const count = guests === "4+" ? "4" : guests;
+    const rooms = roomCount === "4+" ? "4" : roomCount;
+    const q = new URLSearchParams({ checkIn, checkOut, guests: count, rooms });
+    window.location.assign(`${base}/book?${q.toString()}`);
+  };
 
   return (
-    <>
-      <HeroSlider slides={heroImages}>
-        <motion.div initial={{ opacity: 0, y: 40 }} animate={{ opacity: 1, y: 0 }} transition={{ duration: 0.9, delay: 0.3 }}>
-          <p className="text-sm font-medium text-white/80">{t.home.tagline}</p>
-          <h1 className="mt-4 max-w-3xl whitespace-pre-line text-4xl font-semibold leading-[1.05] tracking-tight text-white sm:text-6xl lg:text-7xl">
-            {t.home.heroTitle}
-          </h1>
-          <p className="mt-6 max-w-xl whitespace-pre-line text-lg text-white/70">{t.home.heroSubtitle}</p>
-          <div className="mt-10 flex flex-wrap gap-3">
-            <Cta href={`${p}/book`} primary>{t.home.bookNow}</Cta>
-            <Cta href={`${p}/contact`}>{t.home.contactUs}</Cta>
-            <Cta href={`${p}/services#airport`}>{t.home.airportPickup}</Cta>
-            <Cta href={`${p}/contact?type=longstay`}>{t.home.longStayInquiry}</Cta>
+    <main className="bg-[#d5dee3] text-[#1b1d1f]">
+      <section className="grid min-h-[100svh] lg:grid-cols-2">
+        <div className="relative min-h-[640px] overflow-hidden bg-[#1b1d1f] text-white">
+          <div className="absolute inset-0">
+            {slides.map((slide, i) => {
+              const revealLeft = slide.url.includes("reception-01");
+              return (
+                <div
+                  key={slide.url}
+                  className={`absolute transition-opacity duration-1000 ease-in-out ${
+                    revealLeft ? "inset-y-0 left-[42%] right-0" : "inset-0"
+                  } ${i === heroIndex ? "opacity-100" : "opacity-0"}`}
+                >
+                  <HotelImage
+                    src={slide.url}
+                    alt={slide.alt}
+                    fill
+                    priority={i === 0}
+                    variant="hero"
+                    sizes="(min-width: 1024px) 50vw, 100vw"
+                    quality={90}
+                    className={revealLeft ? "!object-[left_center]" : ""}
+                  />
+                </div>
+              );
+            })}
           </div>
-        </motion.div>
-      </HeroSlider>
+          <div className="absolute inset-y-0 left-0 w-[42%] bg-[#1b1d1f]" />
+          {slides.length > 1 ? (
+            <div
+              className="absolute bottom-8 right-5 z-20 flex items-center gap-3 sm:right-8"
+              onMouseEnter={() => setHeroPaused(true)}
+              onMouseLeave={() => setHeroPaused(false)}
+            >
+              <button
+                type="button"
+                aria-label="이전 사진"
+                onClick={() => goHero(-1)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15"
+              >
+                ‹
+              </button>
+              <span className="text-xs tabular-nums text-white/80">
+                {heroIndex + 1} / {slides.length}
+              </span>
+              <button
+                type="button"
+                aria-label="다음 사진"
+                onClick={() => goHero(1)}
+                className="flex h-10 w-10 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15"
+              >
+                ›
+              </button>
+            </div>
+          ) : null}
+          <div className="relative z-10 flex h-full min-h-[640px] flex-col px-6 py-8 sm:px-10 sm:py-10">
+            <p className="max-w-[calc(42%-2.5rem)] text-[11px] font-medium leading-snug tracking-[0.1em]">LOTUS KOREAN HOTEL</p>
+            <div className="mt-auto max-w-xl">
+              <div className="mb-5 h-px w-14 bg-white/45" />
+              <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">01 /</p>
+              <h1 className="mt-2 text-[4.25rem] font-bold leading-[0.86] tracking-[-0.05em] sm:text-8xl lg:text-[6.5rem]">
+                숙박을
+                <br />
+                예약하세요
+              </h1>
+            </div>
+            <Link href="#rooms" className="mt-12 block w-fit">
+              <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">02 /</p>
+              <p className="stroke-type mt-1 text-6xl font-bold leading-none tracking-[-0.05em] text-white/75 sm:text-7xl">객실</p>
+            </Link>
+          </div>
+        </div>
 
-      <MotionSection className="luxury-gradient px-4 py-24 sm:px-8">
-        <HospitalitySection t={t} />
-      </MotionSection>
+        <div className="relative flex min-h-[640px] flex-col bg-white">
+          <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-6 sm:px-10">
+            <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
+              <Link href={`${base}/rooms`}>객실</Link>
+              <Link href={`${base}/dining`}>다이닝</Link>
+              <Link href={`${base}/services`}>서비스</Link>
+              <Link href={`${base}/contact`}>문의</Link>
+            </nav>
+            <div className="flex items-center gap-6 text-sm">
+              <Link href={`${base}/book`} className="font-medium">
+                예약
+              </Link>
+              <span className="text-[#8b9398]">한국어</span>
+            </div>
+          </div>
 
-      <MotionSection className="bg-card px-4 py-24 sm:px-8">
-        <AirportSection p={p} t={t} />
-      </MotionSection>
+          <div className="relative">
+            <p aria-hidden className="stroke-type pointer-events-none absolute right-6 top-2 text-7xl font-medium leading-none tracking-[-0.06em] text-[#d5dde1] sm:right-10 sm:text-8xl">
+              01
+            </p>
+            <div className="grid border-t border-[#e6ebed] sm:grid-cols-2">
+              <div className="border-b border-[#e6ebed] px-6 py-8 sm:border-b-0 sm:border-r sm:px-10">
+                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">위치</p>
+                <p className="mt-4 inline-block border-b border-[#1b1d1f] pb-0.5 text-sm font-medium">Bengaluru</p>
+                {address ? <p className="mt-3 max-w-xs text-xs leading-5 text-[#6d757a]">{address}</p> : null}
+              </div>
+              <div className="px-6 py-8 sm:px-10">
+                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">객실</p>
+                <div className="mt-4 flex items-center gap-4">
+                  {COUNTS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setRoomCount(n)}
+                      className={`flex h-8 min-w-8 items-center justify-center text-sm ${
+                        roomCount === n ? "rounded-full bg-[#1b1d1f] px-2 text-white" : "text-[#1b1d1f]"
+                      }`}
+                      aria-pressed={roomCount === n}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+                <p className="mt-8 text-[11px] tracking-[0.16em] text-[#8b9398]">인원</p>
+                <div className="mt-4 flex items-center gap-4">
+                  {COUNTS.map((n) => (
+                    <button
+                      key={n}
+                      type="button"
+                      onClick={() => setGuests(n)}
+                      className={`flex h-8 min-w-8 items-center justify-center text-sm ${
+                        guests === n ? "rounded-full bg-[#1b1d1f] px-2 text-white" : "text-[#1b1d1f]"
+                      }`}
+                      aria-pressed={guests === n}
+                    >
+                      {n}
+                    </button>
+                  ))}
+                </div>
+              </div>
+            </div>
+            <div className="grid border-t border-[#e6ebed] sm:grid-cols-2">
+              <label className="border-b border-[#e6ebed] px-6 py-8 sm:border-b-0 sm:border-r sm:px-10">
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">도착</span>
+                <input
+                  type="date"
+                  value={checkIn}
+                  onChange={(e) => setCheckIn(e.target.value)}
+                  className="mt-4 block w-full bg-transparent text-sm font-medium outline-none"
+                />
+              </label>
+              <label className="px-6 py-8 sm:px-10">
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">출발</span>
+                <input
+                  type="date"
+                  value={checkOut}
+                  onChange={(e) => setCheckOut(e.target.value)}
+                  className="mt-4 block w-full bg-transparent text-sm font-medium outline-none"
+                />
+              </label>
+            </div>
+          </div>
 
-      <MotionSection className="px-4 py-24 sm:px-8">
-        <RoomsSection rooms={rooms} p={p} t={t} />
-      </MotionSection>
+          <div className="flex justify-end border-t border-[#e6ebed]">
+            <button type="button" onClick={goBook} className="bg-[#aebcc3] px-8 py-6 text-sm text-white hover:bg-[#9aadb6]">
+              예약 가능 확인
+              <span aria-hidden className="ml-3">
+                ↓
+              </span>
+            </button>
+          </div>
+        </div>
+      </section>
 
-      <MotionSection className="bg-beige px-4 py-24 dark:bg-charcoal/30 sm:px-8">
-        <TestimonialsSection t={t} />
-      </MotionSection>
+      <section id="rooms" className="bg-[#d5dee3] px-4 py-8 sm:px-8 sm:py-12">
+        <div className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
+          <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
+            <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">02 / Rooms</p>
+            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">객실</h2>
+          </div>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">M Room 7실, B Room 15실, S Room 1실입니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다. 고등학생·대학생 특별 할인이 있습니다. 예약 요청을 보낼 때 해당 여부를 선택해 주세요.</p>
+          <div className="mt-8 grid gap-10 lg:grid-cols-2">
+            {roomCards.map((room, i) => (
+              <article key={room.id}>
+                <div className="relative aspect-[5/4] overflow-hidden bg-[#e7ecee]">
+                  <HotelImage src={room.imageUrl ?? DEFAULT_ROOM_IMAGE} alt={room.nameKo} fill variant="room" sizes="(min-width: 1024px) 40vw, 100vw" />
+                </div>
+                <div className="mt-4 flex items-start justify-between gap-6 border-t border-[#1b1d1f] pt-3">
+                  <div>
+                    <p className="text-[11px] tracking-[0.18em] text-[#8b9398]">{String(i + 1).padStart(2, "0")}</p>
+                    <h3 className="mt-1 text-2xl font-bold tracking-[-0.04em]">{room.nameKo}</h3>
+                    {room.description ? <p className="mt-3 max-w-md text-sm leading-6 text-[#5e676c]">{room.description}</p> : null}
+                  </div>
+                  <Link href={`${base}/book`} className="shrink-0 text-[11px] tracking-[0.18em]">
+                    예약
+                  </Link>
+                </div>
+              </article>
+            ))}
+          </div>
+        </div>
+      </section>
 
-      <MotionSection className="px-4 py-24 sm:px-8">
-        <LocationSection address={address} t={t} />
-      </MotionSection>
-    </>
+      <section id="dining" className="bg-[#d5dee3] px-4 pb-8 sm:px-8 sm:pb-12">
+        <div className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
+          <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
+            <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">03 / Dining</p>
+            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h2>
+          </div>
+          <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.35fr_0.8fr]">
+            <BreakfastSlider images={HOTEL_IMAGES.food.gallery} className="aspect-square sm:aspect-[5/4]" />
+            <div>
+              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">아침과 저녁은 한식입니다</p>
+              <p className="mt-4 text-sm leading-7 text-[#5e676c]">밥, 국, 반찬을 쟁반에 올립니다. 단체 식사는 예약 때 안내합니다.</p>
+              <div id="services" className="mt-8 border-t border-[#1b1d1f]">
+                <Note index="01" title="공항 픽업" text="차량 한 대당 USD 27입니다. 도착 시간과 항공편을 알려 주시면 호텔까지 이동합니다." />
+                <Note index="02" title="업무" text="객실에 책상과 Wi-Fi가 있습니다." />
+                <Note index="03" title="장기 체류" text="세탁, 하우스키핑, FRRO와 C-Form 안내를 요청할 수 있습니다." />
+              </div>
+              <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-[11px] tracking-[0.16em]">
+                {phone || email ? <p className="normal-case tracking-normal text-sm text-[#5e676c]">{[phone, email].filter(Boolean).join(" · ")}</p> : <span />}
+                <Link href={`${base}/dining`}>다이닝</Link>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
   );
 }
 
-function HospitalitySection({ t }: { t: Dictionary }) {
-  const items = [
-    { title: t.home.featureCorporateTitle, desc: t.home.featureCorporateDesc },
-    { title: t.home.featureDiningTitle, desc: t.home.featureDiningDesc },
-    { title: t.home.featureLongStayTitle, desc: t.home.featureLongStayDesc },
-  ];
+function Note({ index, title, text }: { index: string; title: string; text: string }) {
   return (
-    <div className="mx-auto max-w-7xl">
-      <SectionLabel>{t.home.hospitalityLabel}</SectionLabel>
-      <h2 className="mt-3 max-w-2xl text-3xl font-semibold tracking-tight sm:text-4xl">{t.home.hospitalityTitle}</h2>
-      <p className="mt-6 max-w-3xl leading-relaxed text-muted">{t.home.hospitalityDesc}</p>
-      <FeatureGrid items={items} />
-    </div>
-  );
-}
-
-function FeatureGrid({ items }: { items: { title: string; desc: string }[] }) {
-  return (
-    <div className="mt-12 grid gap-6 sm:grid-cols-3">
-      {items.map((item) => (
-        <MotionCard key={item.title} className="apple-card p-8">
-          <h3 className="text-xl font-semibold tracking-tight">{item.title}</h3>
-          <p className="mt-3 text-sm leading-relaxed text-muted">{item.desc}</p>
-        </MotionCard>
-      ))}
-    </div>
-  );
-}
-function AirportSection({ p, t }: { p: string; t: Dictionary }) {
-  return (
-    <div className="mx-auto max-w-7xl grid items-center gap-12 lg:grid-cols-2">
-      <HotelPhotoFrame className="aspect-[4/3] rounded-2xl shadow-luxury">
-        <HotelImage src={HOTEL_IMAGES.reception} alt={t.home.airportLabel} fill variant="card" />
-      </HotelPhotoFrame>
+    <div className="grid grid-cols-[2.5rem_1fr] gap-3 border-b border-[#e6ebed] py-4">
+      <p className="text-[11px] tracking-[0.14em] text-[#8b9398]">{index}</p>
       <div>
-        <SectionLabel>{t.home.airportLabel}</SectionLabel>
-        <h2 className="mt-3 font-display text-3xl font-semibold">{t.home.airportTitle}</h2>
-        <p className="mt-4 leading-relaxed text-muted">{t.home.airportDesc}</p>
-        <Link href={`${p}/services#airport`} className="mt-6 inline-block text-sm font-medium text-gold hover:underline">
-          {t.common.learnMore}
-        </Link>
+        <h3 className="text-sm font-semibold tracking-[-0.02em]">{title}</h3>
+        <p className="mt-1 text-sm leading-6 text-[#5e676c]">{text}</p>
       </div>
     </div>
   );
-}
-
-function RoomsSection({ rooms, p, t }: { rooms: RoomPreview[]; p: string; t: Dictionary }) {
-  return (
-    <div className="mx-auto max-w-7xl">
-      <SectionLabel>{t.home.roomsLabel}</SectionLabel>
-      <h2 className="mt-3 font-display text-3xl font-semibold">{t.home.roomsTitle}</h2>
-      <div className="mt-10 grid items-stretch gap-8 md:grid-cols-3">
-        {rooms.map((room) => (
-          <MotionCard key={room.id} className="group flex h-full flex-col overflow-hidden rounded-2xl bg-card shadow-luxury">
-            <RoomImage room={room} />
-            <RoomBody room={room} p={p} t={t} />
-          </MotionCard>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function RoomBody({ room, p, t }: { room: RoomPreview; p: string; t: Dictionary }) {
-  return (
-    <div className="p-6">
-      <h3 className="font-display text-xl font-semibold">{room.nameKo}</h3>
-      <p className="mt-2 line-clamp-2 text-sm text-muted">{room.description}</p>
-      <p className="mt-4 text-sm font-medium text-gold">
-        {formatMsg(t.common.from, { price: room.baseRate.toLocaleString() })} {t.common.perNight}
-      </p>
-      <Link href={`${p}/rooms`} className="mt-4 inline-block text-sm hover:underline">{t.common.viewDetails}</Link>
-    </div>
-  );
-}
-
-function RoomImage({ room }: { room: RoomPreview }) {
-  return (
-    <HotelPhotoFrame className="aspect-[4/3] w-full shrink-0">
-      <HotelImage
-        src={room.imageUrl ?? DEFAULT_ROOM_IMAGE}
-        alt={room.nameKo}
-        fill
-        variant="room"
-        className="transition duration-700 group-hover:scale-[1.06]"
-      />
-    </HotelPhotoFrame>
-  );
-}
-function TestimonialsSection({ t }: { t: Dictionary }) {
-  return (
-    <div className="mx-auto max-w-7xl">
-      <SectionLabel>{t.home.testimonialsLabel}</SectionLabel>
-      <div className="mt-8 grid gap-6 md:grid-cols-3">
-        {t.testimonials.map((item) => (
-          <blockquote key={item.name} className="rounded-2xl bg-card p-8 shadow-luxury">
-            <p className="text-sm leading-relaxed text-muted">&ldquo;{item.quote}&rdquo;</p>
-            <footer className="mt-6">
-              <p className="font-medium">{item.name}</p>
-              <p className="text-xs text-muted">{item.company}</p>
-            </footer>
-          </blockquote>
-        ))}
-      </div>
-    </div>
-  );
-}
-
-function LocationSection({ address, t }: { address?: string | null; t: Dictionary }) {
-  return (
-    <div className="mx-auto max-w-7xl">
-      <SectionLabel>{t.home.locationLabel}</SectionLabel>
-      <h2 className="mt-3 font-display text-3xl font-semibold">{t.home.locationTitle}</h2>
-      <p className="mt-4 max-w-2xl text-muted">{address ?? t.home.locationFallback}</p>
-      <div className="mt-8 aspect-[21/9] overflow-hidden rounded-2xl bg-beige shadow-luxury">
-        <iframe title="Map" className="h-full w-full border-0" loading="lazy" src="https://maps.google.com/maps?q=Lotus+Korean+Hotel+Bengaluru&output=embed" />
-      </div>
-    </div>
-  );
-}
-
-function Cta({ href, children, primary }: { href: string; children: React.ReactNode; primary?: boolean }) {
-  return (
-    <Link
-      href={href}
-      className={
-        primary
-          ? "apple-btn-primary px-6 py-3"
-          : "inline-flex items-center justify-center rounded-full border border-white/30 bg-white/10 px-6 py-3 text-sm font-medium text-white backdrop-blur transition hover:bg-white/20"
-      }
-    >
-      {children}
-    </Link>
-  );
-}
-
-function SectionLabel({ children }: { children: React.ReactNode }) {
-  return <p className="apple-eyebrow">{children}</p>;
 }
