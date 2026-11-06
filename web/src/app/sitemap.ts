@@ -4,6 +4,8 @@ import { absoluteUrl } from "@/lib/seo";
 
 const PUBLIC_PATHS = ["", "/rooms", "/dining", "/services", "/contact"] as const;
 
+export const dynamic = "force-dynamic";
+
 export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
   const tenants = await listTenantsPublic();
   const lastModified = new Date();

@@ -19,6 +19,9 @@ import { LanguageProvider } from "@/components/language-provider";
 import { SITE_DESCRIPTION, SITE_KEYWORDS, SITE_NAME, SITE_TAGLINE, getSiteUrl } from "@/lib/seo";
 import "./globals.css";
 
+// The SQLite file is on a Railway volume, which is not mounted while the image is built.
+export const dynamic = "force-dynamic";
+
 export const metadata: Metadata = {
   metadataBase: new URL(getSiteUrl()),
   title: {
