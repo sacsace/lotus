@@ -1,7 +1,9 @@
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 32 32" role="img" aria-label="Lotus Korean Hotel">
-  <circle cx="16" cy="16" r="14.6" fill="#1c3a57"/>
-  <path
-    fill="#f4f1ea"
-    d="M12.35 8.7h4.9v1.55h-1.45V20.2h6.15v1.45h1.2v2.45H12.35V8.7z"
-  />
+  <rect width="32" height="32" fill="#1b1d1f"/>
+  <g fill="none" stroke="#ffffff" stroke-width="1.45">
+    <circle cx="16" cy="16" r="11.4"/>
+    <circle cx="16" cy="16" r="8.6"/>
+    <circle cx="16" cy="16" r="5.8"/>
+    <circle cx="16" cy="16" r="3"/>
+  </g>
 </svg>
