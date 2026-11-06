@@ -155,7 +155,7 @@ function MenuBlock({
 }: {
   index: string;
   title: string;
-  items: string[];
+  items: readonly string[];
   image: string;
   todayMenu: string;
 }) {

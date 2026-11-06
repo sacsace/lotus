@@ -5,6 +5,7 @@ import { PAGE_SEO, buildMetadata } from "@/lib/seo";
 import { getTenantBySlug } from "@/lib/tenant";
 import { PUBLIC_ROOM_CODES, sortRoomTypes } from "@/lib/lotus-rooms";
 import type { Metadata } from "next";
+import { notFound } from "next/navigation";
 
 type Props = { params: Promise<{ tenantSlug: string }> };
 
