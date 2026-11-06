@@ -1,0 +1,7 @@
+[build]
+builder = "RAILPACK"
+
+[deploy]
+startCommand = "npx prisma db push && node prisma/ensure-seed.mjs && npx next start -H 0.0.0.0 -p ${{PORT}}"
+restartPolicyType = "ON_FAILURE"
+overlapSeconds = 0

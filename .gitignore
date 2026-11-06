@@ -16,6 +16,9 @@ web/prisma/dev.db-journal
 # User uploads (managed on server)
 web/public/uploads/
 
+# Railway CLI link
+.railway/
+
 # IDE & OS
 .DS_Store
 *.pem
