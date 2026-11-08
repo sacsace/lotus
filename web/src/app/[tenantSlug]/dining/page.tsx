@@ -1,4 +1,5 @@
 import { DiningPageContent } from "@/components/public/dining-page-content";
+import { getDiningGalleryUrls } from "@/lib/dining-photos";
 import { HANSIK_MENU_KEY, readHansikMenu } from "@/lib/hansik-menu";
 import { prisma } from "@/lib/prisma";
 import { PAGE_SEO, buildMetadata } from "@/lib/seo";
@@ -25,13 +26,14 @@ export default async function DiningPage({ params }: Props) {
   const today = new Date();
   today.setHours(0, 0, 0, 0);
 
-  const [menus, hansik] = await Promise.all([
+  const [menus, hansik, gallery] = await Promise.all([
     prisma.diningMenu.findMany({
       where: { tenantId: tenant.id, menuDate: today },
     }),
     prisma.siteContent.findUnique({
       where: { tenantId_key: { tenantId: tenant.id, key: HANSIK_MENU_KEY } },
     }),
+    getDiningGalleryUrls(tenant.id),
   ]);
 
   const breakfast = menus.find((m) => m.mealType === "breakfast");
@@ -51,6 +53,7 @@ export default async function DiningPage({ params }: Props) {
       breakfast={parseItems(breakfast?.items)}
       dinner={parseItems(dinner?.items)}
       menu={readHansikMenu(hansik?.value)}
+      gallery={gallery}
     />
   );
 }

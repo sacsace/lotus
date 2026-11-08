@@ -43,6 +43,13 @@ export const HOTEL_IMAGES = {
 
 export const DEFAULT_ROOM_IMAGE = HOTEL_IMAGES.rooms.M;
 
+/** Default dining slideshow: featured breakfast, dinner tray, then remaining breakfast shots. */
+export function defaultDiningGallery(): string[] {
+  const breakfast = [...HOTEL_IMAGES.food.gallery];
+  const featured = breakfast.find((src) => src.endsWith("breakfast-28.jpg")) ?? breakfast[0];
+  return [featured, HOTEL_IMAGES.food.dinner, ...breakfast.filter((src) => src !== featured)];
+}
+
 export function roomGalleryForCode(code: string | null | undefined, fallback?: string | null) {
   if (code && code in HOTEL_IMAGES.roomGalleries) {
     return HOTEL_IMAGES.roomGalleries[code as keyof typeof HOTEL_IMAGES.roomGalleries];

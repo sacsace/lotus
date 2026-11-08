@@ -40,6 +40,7 @@ export function canRoleAccessRoute(role: AdminRole, pathname: string): boolean {
   if (pathname.startsWith("/admin/guests")) return hasPermission(role, "guests:view");
   if (pathname.startsWith("/admin/rooms")) return hasPermission(role, "rooms:view");
   if (pathname.startsWith("/admin/room-photos")) return hasPermission(role, "content:view");
+  if (pathname.startsWith("/admin/dining-photos")) return hasPermission(role, "content:view");
   if (pathname.startsWith("/admin/pickups")) return hasPermission(role, "pickups:view");
   if (pathname.startsWith("/admin/content")) return hasPermission(role, "content:view");
   if (pathname.startsWith("/admin/menu")) return hasPermission(role, "content:view");

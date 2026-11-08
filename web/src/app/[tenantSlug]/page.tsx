@@ -1,5 +1,6 @@
 import { HomePage } from "@/components/public/home-page";
 import { getHeroImages } from "@/lib/content";
+import { getDiningGalleryUrls } from "@/lib/dining-photos";
 import { prisma } from "@/lib/prisma";
 import { PAGE_SEO, buildMetadata } from "@/lib/seo";
 import { getTenantBySlug } from "@/lib/tenant";
@@ -24,11 +25,12 @@ export default async function TenantHomePage({ params }: Props) {
   const tenant = await getTenantBySlug(tenantSlug);
   if (!tenant) notFound();
 
-  const [heroImages, rooms] = await Promise.all([
+  const [heroImages, rooms, diningGallery] = await Promise.all([
     getHeroImages(tenant.id),
     prisma.roomType.findMany({
       where: { tenantId: tenant.id, code: { in: [...PUBLIC_ROOM_CODES] } },
     }),
+    getDiningGalleryUrls(tenant.id),
   ]);
 
   return (
@@ -36,6 +38,7 @@ export default async function TenantHomePage({ params }: Props) {
       tenantSlug={tenant.slug}
       heroImages={heroImages}
       rooms={sortRoomTypes(rooms)}
+      diningGallery={diningGallery}
       address={tenant.address}
       phone={tenant.phone}
       email={tenant.email}

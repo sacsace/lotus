@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HotelImage } from "@/components/hotel-image";
 import { BreakfastSlider } from "@/components/public/breakfast-slider";
-import { HOTEL_IMAGES, DEFAULT_ROOM_IMAGE } from "@/lib/hotel-images";
+import { HOTEL_IMAGES, DEFAULT_ROOM_IMAGE, defaultDiningGallery } from "@/lib/hotel-images";
 
 type RoomPreview = {
   id: string;
@@ -18,6 +18,7 @@ type Props = {
   tenantSlug: string;
   heroImages: { url: string; alt: string }[];
   rooms: RoomPreview[];
+  diningGallery?: string[];
   address?: string | null;
   phone?: string | null;
   email?: string | null;
@@ -25,8 +26,9 @@ type Props = {
 
 const COUNTS = ["1", "2", "3", "4+"] as const;
 
-export function HomePage({ tenantSlug, heroImages, rooms, address, phone, email }: Props) {
+export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address, phone, email }: Props) {
   const slides = heroImages.length ? heroImages : [...HOTEL_IMAGES.hero];
+  const foodSlides = diningGallery?.length ? diningGallery : defaultDiningGallery();
   const [heroIndex, setHeroIndex] = useState(0);
   const [heroPaused, setHeroPaused] = useState(false);
   const roomCards = rooms.length
@@ -267,7 +269,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, address, phone, email 
             <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h2>
           </div>
           <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.35fr_0.8fr]">
-            <BreakfastSlider images={HOTEL_IMAGES.food.gallery} className="aspect-square sm:aspect-[5/4]" />
+            <BreakfastSlider images={foodSlides} className="aspect-square sm:aspect-[5/4]" />
             <div>
               <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">아침과 저녁, 정성껏 준비한 한식을 제공합니다</p>
               <p className="mt-4 text-sm leading-7 text-[#5e676c]">

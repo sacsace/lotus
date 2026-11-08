@@ -9,6 +9,7 @@ const items = [
   { href: "/admin/guests", label: "고객 관리" },
   { href: "/admin/rooms", label: "객실 관리" },
   { href: "/admin/room-photos", label: "객실 사진" },
+  { href: "/admin/dining-photos", label: "한식 사진" },
   { href: "/admin/pickups", label: "공항 픽업" },
   { href: "/admin/content", label: "콘텐츠 관리" },
   { href: "/admin/menu", label: "메뉴 관리" },

@@ -4,24 +4,23 @@ import { useState } from "react";
 import { useI18n } from "@/components/language-provider";
 import { HotelImage } from "@/components/hotel-image";
 import type { HansikMenuSection } from "@/lib/hansik-menu";
-import { HOTEL_IMAGES } from "@/lib/hotel-images";
-
-const breakfast = HOTEL_IMAGES.food.gallery;
-const featuredBreakfast = breakfast.find((src) => src.endsWith("breakfast-28.jpg")) ?? breakfast[0];
-const DINING_SLIDES = [featuredBreakfast, HOTEL_IMAGES.food.dinner, ...breakfast.filter((src) => src !== featuredBreakfast)];
+import { defaultDiningGallery, HOTEL_IMAGES } from "@/lib/hotel-images";
 
 export function DiningPageContent({
   breakfast,
   dinner,
   menu,
+  gallery,
 }: {
   breakfast: string[];
   dinner: string[];
   menu: HansikMenuSection[];
+  gallery?: string[];
 }) {
   const { t } = useI18n();
   const breakfastItems = breakfast.length ? breakfast : t.dining.defaultItems;
   const dinnerItems = dinner.length ? dinner : t.dining.defaultItems;
+  const slides = gallery?.length ? gallery : defaultDiningGallery();
 
   return (
     <div className="bg-[#d5dee3] px-4 py-8 text-[#1b1d1f] sm:px-8 sm:py-12">
@@ -34,7 +33,7 @@ export function DiningPageContent({
           아침과 저녁, 정성껏 준비한 한식을 제공합니다. 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다.
         </p>
         <div className="mt-8">
-          <DiningSlideshow images={DINING_SLIDES} />
+          <DiningSlideshow images={slides} />
         </div>
       </section>
 
