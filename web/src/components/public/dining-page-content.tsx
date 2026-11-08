@@ -30,7 +30,9 @@ export function DiningPageContent({
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">03 / Dining</p>
           <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h1>
         </div>
-        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">아침과 저녁을 쟁반에 올려 드립니다.</p>
+        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">
+          아침과 저녁, 정성껏 준비한 한식을 제공합니다. 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다.
+        </p>
         <div className="mt-8">
           <DiningSlideshow images={DINING_SLIDES} />
         </div>

@@ -233,21 +233,25 @@ export function HomePage({ tenantSlug, heroImages, rooms, address, phone, email 
             <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">02 / Rooms</p>
             <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">객실</h2>
           </div>
-          <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">M Room 7실, B Room 15실, S Room 1실입니다. 기본 숙박에는 조식, 청소, 세탁이 포함됩니다. 고등학생·대학생 특별 할인이 있습니다. 예약 요청을 보낼 때 해당 여부를 선택해 주세요.</p>
+          <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">
+            출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식, 객실 청소 및 세탁 서비스가 포함되어 있습니다. 고등학생·대학생 특별 할인이 있습니다. 예약 요청을 보낼 때 해당 여부를 선택해 주세요.
+          </p>
           <div className="mt-8 grid gap-10 lg:grid-cols-2">
             {roomCards.map((room, i) => (
               <article key={room.id}>
                 <div className="relative aspect-[5/4] overflow-hidden bg-[#e7ecee]">
-                  <HotelImage src={room.imageUrl ?? DEFAULT_ROOM_IMAGE} alt={room.nameKo} fill variant="room" sizes="(min-width: 1024px) 40vw, 100vw" />
+                  <HotelImage src={room.imageUrl ?? DEFAULT_ROOM_IMAGE} alt="객실" fill variant="room" sizes="(min-width: 1024px) 40vw, 100vw" />
                 </div>
                 <div className="mt-4 flex items-start justify-between gap-6 border-t border-[#1b1d1f] pt-3">
                   <div>
                     <p className="text-[11px] tracking-[0.18em] text-[#8b9398]">{String(i + 1).padStart(2, "0")}</p>
-                    <h3 className="mt-1 text-2xl font-bold tracking-[-0.04em]">{room.nameKo}</h3>
-                    {room.description ? <p className="mt-3 max-w-md text-sm leading-6 text-[#5e676c]">{room.description}</p> : null}
+                    <h3 className="mt-1 text-2xl font-bold tracking-[-0.04em]">객실</h3>
+                    <p className="mt-3 max-w-md text-sm leading-6 text-[#5e676c]">
+                      편안한 휴식과 업무를 위한 공간을 갖추고 있습니다. 객실별 시설과 구조는 다를 수 있으니 예약 시 확인해 주세요.
+                    </p>
                   </div>
                   <Link href={`${base}/book`} className="shrink-0 text-[11px] tracking-[0.18em]">
-                    예약
+                    예약 문의
                   </Link>
                 </div>
               </article>
@@ -265,12 +269,26 @@ export function HomePage({ tenantSlug, heroImages, rooms, address, phone, email 
           <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.35fr_0.8fr]">
             <BreakfastSlider images={HOTEL_IMAGES.food.gallery} className="aspect-square sm:aspect-[5/4]" />
             <div>
-              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">아침과 저녁은 한식입니다</p>
-              <p className="mt-4 text-sm leading-7 text-[#5e676c]">밥, 국, 반찬을 쟁반에 올립니다. 단체 식사는 예약 때 안내합니다.</p>
+              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">아침과 저녁, 정성껏 준비한 한식을 제공합니다</p>
+              <p className="mt-4 text-sm leading-7 text-[#5e676c]">
+                따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다. 단체 식사는 예약 시 문의해 주세요.
+              </p>
               <div id="services" className="mt-8 border-t border-[#1b1d1f]">
-                <Note index="01" title="공항 픽업" text="차량 한 대당 USD 27입니다. 도착 시간과 항공편을 알려 주시면 호텔까지 이동합니다." />
-                <Note index="02" title="업무" text="객실에 책상과 Wi-Fi가 있습니다." />
-                <Note index="03" title="장기 체류" text="세탁, 하우스키핑, FRRO와 C-Form 안내를 요청할 수 있습니다." />
+                <Note
+                  index="01"
+                  title="공항 픽업"
+                  text="공항 픽업은 차량 1대당 USD 27입니다. 도착 시간과 항공편 정보를 알려주시면 공항에서 호텔까지 편안하게 모셔다드립니다."
+                />
+                <Note
+                  index="02"
+                  title="업무 환경"
+                  text="객실에 책상과 Wi-Fi가 마련되어 있어 출장 중에도 편리하게 업무를 보실 수 있습니다."
+                />
+                <Note
+                  index="03"
+                  title="장기 투숙"
+                  text="장기 투숙객을 위한 세탁 및 객실 청소 서비스를 제공합니다. FRRO 관련 절차와 C-Form에 대한 안내가 필요하시면 프런트로 문의해 주세요."
+                />
               </div>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-[11px] tracking-[0.16em]">
                 {phone || email ? <p className="normal-case tracking-normal text-sm text-[#5e676c]">{[phone, email].filter(Boolean).join(" · ")}</p> : <span />}
