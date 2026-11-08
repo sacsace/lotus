@@ -1,5 +1,6 @@
 import nodemailer from "nodemailer";
 
+/** Always included for booking / inquiry alerts. */
 export const INQUIRY_RECIPIENTS = ["hello@hotellotus.in", "lee@msventures.in"] as const;
 
 export type InquiryMailInput = {
@@ -7,7 +8,35 @@ export type InquiryMailInput = {
   body: string;
   contact: string;
   reservationCode?: string | null;
+  /** Extra addresses (e.g. tenant contact email). */
+  extraRecipients?: (string | null | undefined)[];
 };
+
+function normalizeEmail(value: string) {
+  return value.trim().toLowerCase();
+}
+
+function isEmail(value: string) {
+  return looksLikeEmail(value);
+}
+
+/** hello@ + lee@ + INQUIRY_TO env + any extras, de-duplicated. */
+export function resolveInquiryRecipients(extra: (string | null | undefined)[] = []) {
+  const fromEnv = (process.env.INQUIRY_TO ?? "")
+    .split(/[,;]+/)
+    .map((item) => item.trim())
+    .filter(Boolean);
+  const seen = new Set<string>();
+  const list: string[] = [];
+  for (const raw of [...INQUIRY_RECIPIENTS, ...fromEnv, ...extra]) {
+    if (!raw || !isEmail(raw)) continue;
+    const key = normalizeEmail(raw);
+    if (seen.has(key)) continue;
+    seen.add(key);
+    list.push(raw.trim());
+  }
+  return list;
+}
 
 type MailField = { label: string; value: string };
 
@@ -126,6 +155,11 @@ export async function sendInquiryMail(input: InquiryMailInput) {
     throw new Error("메일 서버 설정이 없습니다.");
   }
 
+  const recipients = resolveInquiryRecipients(input.extraRecipients);
+  if (recipients.length === 0) {
+    throw new Error("문의 메일 수신자가 없습니다.");
+  }
+
   const port = Number(process.env.SMTP_PORT || 587);
   const transporter = nodemailer.createTransport({
     host,
@@ -136,12 +170,27 @@ export async function sendInquiryMail(input: InquiryMailInput) {
   const fromName = process.env.SMTP_FROM_NAME?.trim() || "Lotus Korean hotel";
   const message = buildInquiryMessage(input);
 
-  await transporter.sendMail({
-    from: { name: fromName, address: user },
-    to: [...INQUIRY_RECIPIENTS],
-    replyTo: message.replyTo ?? undefined,
-    subject: input.subject,
-    text: message.text,
-    html: message.html,
-  });
+  // Send one message per recipient so hello@ and lee@ are each attempted explicitly.
+  const results = await Promise.allSettled(
+    recipients.map((to) =>
+      transporter.sendMail({
+        from: { name: fromName, address: user },
+        to,
+        replyTo: message.replyTo ?? undefined,
+        subject: input.subject,
+        text: message.text,
+        html: message.html,
+      }),
+    ),
+  );
+
+  const failed = recipients.filter((_, i) => results[i]?.status === "rejected");
+  if (failed.length === recipients.length) {
+    const first = results.find((r) => r.status === "rejected");
+    const reason = first && first.status === "rejected" ? String(first.reason) : "unknown";
+    throw new Error(`메일 전송 실패: ${reason}`);
+  }
+  if (failed.length > 0) {
+    console.error(`[inquiry-mail] partial delivery failure: ${failed.join(", ")}`);
+  }
 }

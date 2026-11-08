@@ -1,9 +1,9 @@
 ﻿"use client";
 
 import { useState } from "react";
-import { useI18n } from "@/components/language-provider";
+import { formatMsg, useI18n } from "@/components/language-provider";
 import { HotelImage } from "@/components/hotel-image";
-import { formatHansikPrice, HANSIK_MENU_NOTE, type HansikMenuSection } from "@/lib/hansik-menu";
+import { formatHansikPrice, type HansikMenuSection } from "@/lib/hansik-menu";
 import { defaultDiningGallery, HOTEL_IMAGES } from "@/lib/hotel-images";
 
 export function DiningPageContent({
@@ -26,12 +26,10 @@ export function DiningPageContent({
     <div className="bg-[#d5dee3] px-4 py-8 text-[#1b1d1f] sm:px-8 sm:py-12">
       <section className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
         <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
-          <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">03 / Dining</p>
-          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h1>
+          <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">{t.dining.eyebrow}</p>
+          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.dining.title}</h1>
         </div>
-        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">
-          조식과 석식, 정성껏 준비한 한식을 제공합니다. 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다.
-        </p>
+        <p className="mt-5 max-w-md break-keep text-sm leading-6 text-[#5e676c]">{t.dining.pageIntro}</p>
         <div className="mt-8">
           <DiningSlideshow images={slides} />
         </div>
@@ -39,10 +37,10 @@ export function DiningPageContent({
 
       <section className="mx-auto mt-8 max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
         <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
-          <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">04 / Menu</p>
-          <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">메뉴</h2>
+          <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">{t.dining.menuEyebrow}</p>
+          <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.dining.menuTitle}</h2>
         </div>
-        <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">{HANSIK_MENU_NOTE}</p>
+        <p className="mt-5 max-w-xl break-keep text-sm leading-6 text-[#5e676c]">{t.dining.menuNote}</p>
         <div className="mt-10 grid gap-x-14 gap-y-12 lg:grid-cols-2">
           {menu.map((section) => (
             <article key={section.title} className={section.wide ? "lg:col-span-2" : undefined}>
@@ -74,6 +72,7 @@ export function DiningPageContent({
 }
 
 function DiningSlideshow({ images }: { images: readonly string[] }) {
+  const { t } = useI18n();
   const [index, setIndex] = useState(0);
   const current = images[index] ?? images[0];
   const go = (step: number) => setIndex((i) => (i + step + images.length) % images.length);
@@ -92,7 +91,14 @@ function DiningSlideshow({ images }: { images: readonly string[] }) {
         >
           {images.map((src, i) => (
             <div key={`${src}-${i}`} className="relative h-full shrink-0" style={{ width: `${100 / images.length}%` }}>
-              <HotelImage src={src} alt={`다이닝 사진 ${i + 1}`} fill variant="food" sizes="(min-width: 1024px) 70vw, 100vw" priority={i === 0} />
+              <HotelImage
+                src={src}
+                alt={formatMsg(t.dining.photoAlt, { n: i + 1 })}
+                fill
+                variant="food"
+                sizes="(min-width: 1024px) 70vw, 100vw"
+                priority={i === 0}
+              />
             </div>
           ))}
         </div>
@@ -100,7 +106,7 @@ function DiningSlideshow({ images }: { images: readonly string[] }) {
           <>
             <button
               type="button"
-              aria-label="이전 사진"
+              aria-label={t.home.prevPhoto}
               onClick={() => go(-1)}
               className="absolute left-2 top-1/2 z-10 -translate-y-1/2 px-1 text-4xl leading-none text-white drop-shadow-[0_1px_2px_rgba(27,29,31,0.8)]"
             >
@@ -108,7 +114,7 @@ function DiningSlideshow({ images }: { images: readonly string[] }) {
             </button>
             <button
               type="button"
-              aria-label="다음 사진"
+              aria-label={t.home.nextPhoto}
               onClick={() => go(1)}
               className="absolute right-2 top-1/2 z-10 -translate-y-1/2 px-1 text-4xl leading-none text-white drop-shadow-[0_1px_2px_rgba(27,29,31,0.8)]"
             >
@@ -119,14 +125,14 @@ function DiningSlideshow({ images }: { images: readonly string[] }) {
       </div>
       {images.length > 1 ? (
         <div className="mt-3 flex items-center justify-end gap-4 border-t border-[#1b1d1f] pt-3 text-[11px] tracking-[0.16em]">
-          <button type="button" aria-label="이전 사진" onClick={() => go(-1)}>
-            이전
+          <button type="button" aria-label={t.home.prevPhoto} onClick={() => go(-1)}>
+            {t.common.prev}
           </button>
           <span className="tabular-nums text-[#8b9398]">
             {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
           </span>
-          <button type="button" aria-label="다음 사진" onClick={() => go(1)}>
-            다음
+          <button type="button" aria-label={t.home.nextPhoto} onClick={() => go(1)}>
+            {t.common.next}
           </button>
         </div>
       ) : null}
@@ -136,7 +142,7 @@ function DiningSlideshow({ images }: { images: readonly string[] }) {
             key={`${src}-thumb-${i}`}
             type="button"
             onClick={() => setIndex(i)}
-            aria-label={`다이닝 사진 ${i + 1}`}
+            aria-label={formatMsg(t.dining.photoAlt, { n: i + 1 })}
             aria-current={i === index ? "true" : undefined}
             className={`relative aspect-square overflow-hidden bg-[#e7ecee] ${i === index ? "outline outline-2 outline-offset-2 outline-[#1b1d1f]" : ""}`}
           >

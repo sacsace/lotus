@@ -13,7 +13,7 @@ export function ServicesPageContent({ tenantSlug }: { tenantSlug: string }) {
       <section className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
         <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">04 / Services</p>
-          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">서비스</h1>
+          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.services.title}</h1>
         </div>
         <p className="mt-5 max-w-md whitespace-pre-line break-keep text-sm leading-6 text-[#5e676c]">{t.services.subtitle}</p>
         <div className="mt-10 grid gap-x-12 lg:grid-cols-2">

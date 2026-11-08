@@ -3,9 +3,10 @@
 import Link from "next/link";
 import { useEffect, useState } from "react";
 import { HotelImage } from "@/components/hotel-image";
+import { LanguageSwitcher } from "@/components/language-switcher";
+import { useI18n } from "@/components/language-provider";
 import { BreakfastSlider } from "@/components/public/breakfast-slider";
 import { RoomSlides } from "@/components/public/room-slides";
-import { ROOM_AMENITIES, ROOM_DESCRIPTION, ROOM_NOTE } from "@/components/public/rooms-page-content";
 import { HOTEL_IMAGES, defaultDiningGallery, roomGalleryForCode } from "@/lib/hotel-images";
 
 type RoomPreview = {
@@ -31,6 +32,7 @@ type Props = {
 const COUNTS = ["1", "2", "3", "4+"] as const;
 
 export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address, phone, email }: Props) {
+  const { t } = useI18n();
   const slides = heroImages.length ? heroImages : [...HOTEL_IMAGES.hero];
   const foodSlides = diningGallery?.length ? diningGallery : defaultDiningGallery();
   const [heroIndex, setHeroIndex] = useState(0);
@@ -118,7 +120,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             >
               <button
                 type="button"
-                aria-label="이전 사진"
+                aria-label={t.home.prevPhoto}
                 onClick={() => goHero(-1)}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15"
               >
@@ -129,7 +131,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
               </span>
               <button
                 type="button"
-                aria-label="다음 사진"
+                aria-label={t.home.nextPhoto}
                 onClick={() => goHero(1)}
                 className="flex h-10 w-10 items-center justify-center rounded-full border border-white/70 text-lg text-white hover:bg-white/15"
               >
@@ -143,14 +145,14 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
               <div className="mb-5 h-px w-14 bg-white/45" />
               <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">01 /</p>
               <h1 className="mt-2 text-[4.25rem] font-bold leading-[0.86] tracking-[-0.05em] sm:text-8xl lg:text-[6.5rem]">
-                객실
+                {t.home.heroBookLine1}
                 <br />
-                예약
+                {t.home.heroBookLine2}
               </h1>
             </div>
             <Link href="#rooms" className="mt-12 block w-fit">
               <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">02 /</p>
-              <p className="stroke-type mt-1 text-6xl font-bold leading-none tracking-[-0.05em] text-white/75 sm:text-7xl">객실</p>
+              <p className="stroke-type mt-1 text-6xl font-bold leading-none tracking-[-0.05em] text-white/75 sm:text-7xl">{t.nav.rooms}</p>
             </Link>
           </div>
         </div>
@@ -158,16 +160,16 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
         <div className="relative flex min-h-[640px] flex-col bg-white">
           <div className="flex flex-wrap items-center justify-between gap-4 px-6 py-6 sm:px-10">
             <nav className="flex flex-wrap gap-x-6 gap-y-2 text-sm">
-              <Link href={`${base}/rooms`}>객실</Link>
-              <Link href={`${base}/dining`}>다이닝</Link>
-              <Link href={`${base}/services`}>서비스</Link>
-              <Link href={`${base}/contact`}>문의</Link>
+              <Link href={`${base}/rooms`}>{t.nav.rooms}</Link>
+              <Link href={`${base}/dining`}>{t.nav.dining}</Link>
+              <Link href={`${base}/services`}>{t.nav.services}</Link>
+              <Link href={`${base}/contact`}>{t.nav.contact}</Link>
             </nav>
-            <div className="flex items-center gap-6 text-sm">
+            <div className="flex flex-wrap items-center gap-4 text-sm">
               <Link href={`${base}/book`} className="font-medium">
-                예약
+                {t.nav.book}
               </Link>
-              <span className="text-[#8b9398]">한국어</span>
+              <LanguageSwitcher />
             </div>
           </div>
 
@@ -177,12 +179,12 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             </p>
             <div className="grid border-t border-[#e6ebed] sm:grid-cols-2">
               <div className="border-b border-[#e6ebed] px-6 py-8 sm:border-b-0 sm:border-r sm:px-10">
-                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">위치</p>
+                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">{t.home.locationLabel}</p>
                 <p className="mt-4 inline-block border-b border-[#1b1d1f] pb-0.5 text-sm font-medium">Bengaluru</p>
                 {address ? <p className="mt-3 max-w-xs text-xs leading-5 text-[#6d757a]">{address}</p> : null}
               </div>
               <div className="px-6 py-8 sm:px-10">
-                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">객실</p>
+                <p className="text-[11px] tracking-[0.16em] text-[#8b9398]">{t.booking.roomCount}</p>
                 <div className="mt-4 flex items-center gap-4">
                   {COUNTS.map((n) => (
                     <button
@@ -198,7 +200,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
                     </button>
                   ))}
                 </div>
-                <p className="mt-8 text-[11px] tracking-[0.16em] text-[#8b9398]">인원</p>
+                <p className="mt-8 text-[11px] tracking-[0.16em] text-[#8b9398]">{t.booking.guests}</p>
                 <div className="mt-4 flex items-center gap-4">
                   {COUNTS.map((n) => (
                     <button
@@ -218,7 +220,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             </div>
             <div className="grid border-t border-[#e6ebed] sm:grid-cols-2">
               <label className="border-b border-[#e6ebed] px-6 py-8 sm:border-b-0 sm:border-r sm:px-10">
-                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">체크인</span>
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">{t.booking.checkIn}</span>
                 <input
                   type="date"
                   value={checkIn}
@@ -227,7 +229,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
                 />
               </label>
               <label className="px-6 py-8 sm:px-10">
-                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">체크아웃</span>
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">{t.booking.checkOut}</span>
                 <input
                   type="date"
                   value={checkOut}
@@ -240,7 +242,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
 
           <div className="flex justify-end border-t border-[#e6ebed]">
             <button type="button" onClick={goBook} className="bg-[#aebcc3] px-8 py-6 text-sm text-white hover:bg-[#9aadb6]">
-              예약 가능 여부 확인
+              {t.home.checkAvailability}
               <span aria-hidden className="ml-3">
                 ↓
               </span>
@@ -252,12 +254,11 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
       <section id="rooms" className="bg-[#d5dee3] px-4 py-8 sm:px-8 sm:py-12">
         <div className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
           <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
-            <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">02 / Rooms</p>
-            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">객실</h2>
+            <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">{t.rooms.eyebrow}</p>
+            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.rooms.title}</h2>
           </div>
           <p className="mt-5 max-w-xl whitespace-pre-line break-keep text-sm leading-6 text-[#5e676c]">
-            {`출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식과 석식, 객실 청소 및 일반 세탁 서비스가 포함되어 있습니다.
-학생 할인 대상에 해당하시면 예약 신청 시 학생 구분을 선택해 주세요. 할인율과 적용 조건은 예약 확정 시 안내하며, 학생증 확인이 필요할 수 있습니다.`}
+            {`${t.rooms.intro}\n${t.booking.studentHint}`}
           </p>
           <div className="mt-10 space-y-14">
             {roomCards.map((room, i) => {
@@ -268,28 +269,28 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
               return (
                 <article key={room.id} className="border-t border-[#1b1d1f] pt-8">
                   <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
-                    <RoomSlides images={images} alt="객실" />
+                    <RoomSlides images={images} alt={t.rooms.alt} />
                     <div>
                       <div className="flex items-start justify-between gap-6">
                         <div>
                           <p className="text-[11px] tracking-[0.18em] text-[#8b9398]">{String(i + 1).padStart(2, "0")}</p>
-                          <h3 className="mt-1 text-3xl font-bold tracking-[-0.04em]">객실 안내</h3>
+                          <h3 className="mt-1 text-3xl font-bold tracking-[-0.04em]">{t.rooms.guideTitle}</h3>
                         </div>
                         <Link href={`${base}/book`} className="shrink-0 text-[11px] tracking-[0.18em]">
-                          예약 문의
+                          {t.rooms.bookInquiry}
                         </Link>
                       </div>
-                      <p className="mt-4 max-w-md text-sm leading-6 text-[#5e676c]">{ROOM_DESCRIPTION}</p>
+                      <p className="mt-4 max-w-md break-keep text-sm leading-6 text-[#5e676c]">{t.rooms.description}</p>
                       <ul className="mt-6">
-                        {ROOM_AMENITIES.map((feature) => (
+                        {t.rooms.amenities.map((feature) => (
                           <li key={feature} className="border-b border-[#e6ebed] py-2.5 text-sm text-[#5e676c]">
                             {feature}
                           </li>
                         ))}
                       </ul>
-                      <p className="mt-5 text-xs leading-5 text-[#8b9398]">{ROOM_NOTE}</p>
+                      <p className="mt-5 text-xs leading-5 text-[#8b9398]">{t.rooms.note}</p>
                       <Link href={`${base}/rooms`} className="mt-6 inline-block text-[11px] tracking-[0.18em]">
-                        객실 더 보기
+                        {t.rooms.viewMore}
                       </Link>
                     </div>
                   </div>
@@ -304,35 +305,21 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
         <div className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
           <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
             <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">03 / Dining</p>
-            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h2>
+            <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.dining.title}</h2>
           </div>
           <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.35fr_0.8fr]">
             <BreakfastSlider images={foodSlides} className="aspect-square sm:aspect-[5/4]" />
             <div>
-              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">조식과 석식, 정성껏 준비한 한식을 제공합니다</p>
-              <p className="mt-4 text-sm leading-7 text-[#5e676c]">
-                따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다. 단체 식사는 예약 시 문의해 주세요.
-              </p>
+              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">{t.home.diningHeadline}</p>
+              <p className="mt-4 break-keep text-sm leading-7 text-[#5e676c]">{t.home.diningBody}</p>
               <div id="services" className="mt-8 border-t border-[#1b1d1f]">
-                <Note
-                  index="01"
-                  title="공항 픽업"
-                  text="공항 픽업은 차량 1대당 USD 27입니다. 도착 시간과 항공편 정보를 알려주시면 공항에서 호텔까지 편안하게 모셔다드립니다."
-                />
-                <Note
-                  index="02"
-                  title="업무 환경"
-                  text="객실에 책상과 Wi-Fi가 마련되어 있어 출장 중에도 편리하게 업무를 보실 수 있습니다."
-                />
-                <Note
-                  index="03"
-                  title="장기 투숙"
-                  text="장기 투숙객을 위한 세탁 및 객실 청소 서비스를 제공합니다. FRRO 관련 절차와 C-Form에 대한 안내가 필요하시면 프런트로 문의해 주세요."
-                />
+                <Note index="01" title={t.home.noteAirportTitle} text={t.home.noteAirportText} />
+                <Note index="02" title={t.home.noteWorkTitle} text={t.home.noteWorkText} />
+                <Note index="03" title={t.home.noteLongstayTitle} text={t.home.noteLongstayText} />
               </div>
               <div className="mt-6 flex flex-wrap items-center justify-between gap-4 text-[11px] tracking-[0.16em]">
                 {phone || email ? <p className="normal-case tracking-normal text-sm text-[#5e676c]">{[phone, email].filter(Boolean).join(" · ")}</p> : <span />}
-                <Link href={`${base}/dining`}>다이닝</Link>
+                <Link href={`${base}/dining`}>{t.nav.dining}</Link>
               </div>
             </div>
           </div>

@@ -1,4 +1,5 @@
 import type { Metadata } from "next";
+import { LOCALES } from "@/lib/i18n/locale";
 
 export const SITE_NAME = "Lotus Korean Hotel";
 export const SITE_NAME_KO = "로터스 코리안 호텔";
@@ -17,15 +18,30 @@ export const SITE_KEYWORDS = [
   "Doddanekkundi hotel",
   "Whitefield Korean hotel",
   "장기 숙박 인도",
+  "班加罗尔韩国酒店",
+  "ベンガルール韓国ホテル",
 ];
 
+export const OG_LOCALES = {
+  primary: "ko_KR",
+  alternates: ["en_IN", "zh_CN", "ja_JP"] as const,
+} as const;
+
 export function getSiteUrl() {
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://hotellotus.in").replace(/\/$/, "");
+  // Production serves on www; apex (hotellotus.in) is not on Railway and returns 404 for many paths.
+  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.hotellotus.in").replace(/\/$/, "");
 }
 
 export function absoluteUrl(path = "/") {
   const normalized = path.startsWith("/") ? path : `/${path}`;
   return `${getSiteUrl()}${normalized === "/" ? "" : normalized}`;
+}
+
+export function languageAlternates(path: string): Record<string, string> {
+  const url = absoluteUrl(path);
+  const languages: Record<string, string> = { "x-default": url };
+  for (const locale of LOCALES) languages[locale] = url;
+  return languages;
 }
 
 type BuildMetaInput = {
@@ -44,23 +60,30 @@ export function buildMetadata({
   noIndex = false,
 }: BuildMetaInput): Metadata {
   const url = absoluteUrl(path);
+  const ogImage = absoluteUrl("/opengraph-image");
   return {
     title: absoluteTitle ? { absolute: title } : title,
     description,
-    alternates: { canonical: url },
+    keywords: SITE_KEYWORDS,
+    alternates: {
+      canonical: url,
+      languages: languageAlternates(path),
+    },
     openGraph: {
       type: "website",
-      locale: "ko_KR",
-      alternateLocale: ["en_IN"],
+      locale: OG_LOCALES.primary,
+      alternateLocale: [...OG_LOCALES.alternates],
       url,
       siteName: SITE_NAME,
       title,
       description,
+      images: [{ url: ogImage, width: 1200, height: 630, alt: SITE_NAME }],
     },
     twitter: {
       card: "summary_large_image",
       title,
       description,
+      images: [ogImage],
     },
     robots: noIndex
       ? { index: false, follow: false, nocache: true }

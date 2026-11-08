@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useState } from "react";
+import { formatMsg, useI18n } from "@/components/language-provider";
 import { HotelImage, HotelPhotoFrame } from "@/components/hotel-image";
 
 export function BreakfastSlider({
@@ -10,6 +11,7 @@ export function BreakfastSlider({
   images: readonly string[];
   className?: string;
 }) {
+  const { t } = useI18n();
   const [index, setIndex] = useState(0);
   const [open, setOpen] = useState(false);
   const [focus, setFocus] = useState<number | null>(null);
@@ -69,27 +71,33 @@ export function BreakfastSlider({
                   setFocus(null);
                   setOpen(true);
                 }}
-                aria-label="조식 사진 전체 보기"
+                aria-label={t.dining.viewAll}
               >
-                <HotelImage src={src} alt={`한국식 아침 상차림 ${i + 1}`} fill variant="food" sizes="(min-width: 1024px) 55vw, 100vw" />
+                <HotelImage
+                  src={src}
+                  alt={formatMsg(t.dining.photoAlt, { n: i + 1 })}
+                  fill
+                  variant="food"
+                  sizes="(min-width: 1024px) 55vw, 100vw"
+                />
               </button>
             ))}
           </div>
         </div>
         <div className="mt-3 flex items-center justify-between gap-4 border-t border-[#1b1d1f] pt-3 text-[11px] tracking-[0.16em]">
           <button type="button" onClick={() => setOpen(true)}>
-            전체 보기
+            {t.dining.viewAll}
           </button>
           {images.length > 1 ? (
             <div className="flex items-center gap-4">
-              <button type="button" aria-label="이전 사진" onClick={() => go(-1)}>
-                이전
+              <button type="button" aria-label={t.home.prevPhoto} onClick={() => go(-1)}>
+                {t.common.prev}
               </button>
               <span className="tabular-nums text-[#8b9398]">
                 {String(index + 1).padStart(2, "0")} / {String(images.length).padStart(2, "0")}
               </span>
-              <button type="button" aria-label="다음 사진" onClick={() => go(1)}>
-                다음
+              <button type="button" aria-label={t.home.nextPhoto} onClick={() => go(1)}>
+                {t.common.next}
               </button>
             </div>
           ) : null}
@@ -103,7 +111,7 @@ export function BreakfastSlider({
                 <button
                   key={src}
                   type="button"
-                  aria-label={`상차림 ${i + 1}`}
+                  aria-label={formatMsg(t.dining.photoAlt, { n: i + 1 })}
                   aria-current={active ? "true" : undefined}
                   onClick={() => setIndex(i)}
                   className={`relative aspect-square overflow-hidden bg-[#e7ecee] ${active ? "outline outline-2 outline-offset-2 outline-[#1b1d1f]" : ""}`}
@@ -119,9 +127,9 @@ export function BreakfastSlider({
       {open ? (
         <div className="fixed inset-0 z-[80] overflow-y-auto bg-[#f3f0ea]">
           <div className="sticky top-0 z-10 flex items-center justify-between border-b border-[#ddd6cc] bg-[#f3f0ea] px-5 py-4 sm:px-8">
-            <p className="text-sm">아침 상차림 {images.length}장</p>
+            <p className="text-sm">{formatMsg(t.dining.galleryCount, { count: images.length })}</p>
             <button type="button" className="text-sm underline underline-offset-4" onClick={() => setOpen(false)}>
-              닫기
+              {t.dining.close}
             </button>
           </div>
           <div className="mx-auto grid max-w-6xl grid-cols-2 gap-2 p-4 sm:grid-cols-3 sm:p-8">
@@ -131,10 +139,16 @@ export function BreakfastSlider({
                 type="button"
                 className="block w-full text-left focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2"
                 onClick={() => setFocus(i)}
-                aria-label={`조식 사진 ${i + 1}`}
+                aria-label={formatMsg(t.dining.photoAlt, { n: i + 1 })}
               >
                 <HotelPhotoFrame className="aspect-[4/3]">
-                  <HotelImage src={src} alt={`조식 ${i + 1}`} fill variant="food" sizes="(min-width: 1024px) 33vw, 50vw" />
+                  <HotelImage
+                    src={src}
+                    alt={formatMsg(t.dining.photoAlt, { n: i + 1 })}
+                    fill
+                    variant="food"
+                    sizes="(min-width: 1024px) 33vw, 50vw"
+                  />
                 </HotelPhotoFrame>
               </button>
             ))}
@@ -147,10 +161,17 @@ export function BreakfastSlider({
           type="button"
           className="fixed inset-0 z-[90] flex items-center justify-center bg-[#171717]/90 p-4"
           onClick={() => setFocus(null)}
-          aria-label="확대 닫기"
+          aria-label={t.dining.close}
         >
           <span className="relative block h-[85vh] w-full max-w-5xl">
-            <HotelImage src={images[focus]} alt={`조식 ${focus + 1}`} fill variant="food" sizes="90vw" className="!object-contain" />
+            <HotelImage
+              src={images[focus]}
+              alt={formatMsg(t.dining.photoAlt, { n: focus + 1 })}
+              fill
+              variant="food"
+              sizes="90vw"
+              className="!object-contain"
+            />
           </span>
         </button>
       ) : null}

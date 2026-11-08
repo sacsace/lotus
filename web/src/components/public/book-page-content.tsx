@@ -16,7 +16,7 @@ export function BookPageContent({ tenantSlug }: Props) {
       <p className="text-[11px] uppercase tracking-[0.28em] text-[#8a8176]">Book</p>
       <span className="mt-4 block h-px w-10 bg-[#a68456]" />
       <h1 className="mt-5 font-display text-4xl font-medium leading-[1.15] text-[#1c1c1c] sm:text-5xl">
-        <span className="block">온라인 예약</span>
+        <span className="block">{t.pages.book.title}</span>
         <span className="block">Lotus Korean Hotel</span>
         <span className="block">Bengaluru, India</span>
       </h1>

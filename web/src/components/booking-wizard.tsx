@@ -94,18 +94,20 @@ export function BookingWizard({ tenantSlug }: Props) {
       return;
     }
     if (!guestName.trim() || !guestEmail.trim()) {
-      setErr("이름과 메일을 적어 주세요.");
+      setErr(t.booking.errNameEmail);
       return;
     }
     if (pickup && (!flightNumber.trim() || !arrivalTime)) {
-      setErr("공항 픽업은 도착 시간과 항공편을 적어 주세요.");
+      setErr(t.booking.errPickupDetails);
       return;
     }
     if (pickup && vehicles < 1) {
-      setErr("필요한 차량 수를 적어 주세요.");
+      setErr(t.booking.errVehicles);
       return;
     }
-    const studentLabel = student === "highschool" ? "고등학생" : student === "university" ? "대학생" : "해당 없음";
+    // Keep inquiry email body in Korean for hotel staff.
+    const studentLabel =
+      student === "highschool" ? "고등학생" : student === "university" ? "대학생" : "해당 없음";
     const message = [
       `성명: ${guestName.trim()}`,
       `객실: ${selected.nameKo}`,
@@ -144,223 +146,221 @@ export function BookingWizard({ tenantSlug }: Props) {
     }
   }
 
+  const studentOptions = [
+    ["none", t.booking.studentNone],
+    ["highschool", t.booking.studentHighschool],
+    ["university", t.booking.studentUniversity],
+  ] as const;
+
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8">
-      <p className="text-sm leading-6 text-[#5e676c]">
-        학생 할인 대상에 해당하시면 예약 신청 시 학생 구분을 선택해 주세요. 할인율과 적용 조건은 예약 확정 시 안내하며, 학생증 확인이 필요할 수 있습니다.
-      </p>
+      <p className="text-sm leading-6 text-[#5e676c]">{t.booking.studentHint}</p>
 
       <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
-          <div className="grid gap-4 sm:grid-cols-2">
-            <div>
-              <label className="text-sm font-medium text-stone-700">{t.booking.checkIn}</label>
-              <input
-                type="date"
-                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-                value={checkIn}
-                onChange={(e) => setCheckIn(e.target.value)}
-              />
-            </div>
-            <div>
-              <label className="text-sm font-medium text-stone-700">{t.booking.checkOut}</label>
-              <input
-                type="date"
-                className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-                value={checkOut}
-                onChange={(e) => setCheckOut(e.target.value)}
-              />
-            </div>
-          </div>
-          <button
-            type="button"
-            onClick={() => void loadAvail()}
-            disabled={loadingAvail}
-            className="rounded-md border border-stone-300 px-4 py-2 text-sm hover:bg-stone-50"
-          >
-            {loadingAvail ? t.common.loading : t.booking.reloadAvail}
-          </button>
-          <div className="space-y-2">
-            {rooms.map((r) => (
-              <label
-                key={r.id}
-                className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 ${
-                  selectedId === r.id ? "border-stone-900 bg-stone-50" : "border-stone-200"
-                }`}
-              >
-                <div className="flex items-center gap-3">
-                  <input
-                    type="radio"
-                    name="room"
-                    checked={selectedId === r.id}
-                    onChange={() => setSelectedId(r.id)}
-                  />
-                  <div>
-                    <p className="font-medium text-stone-900">{r.nameKo}</p>
-                  </div>
-                </div>
-              </label>
-            ))}
-          </div>
-          <div className="flex flex-wrap gap-x-20 gap-y-6 pb-4 sm:gap-x-36">
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-stone-700">객실 수</label>
-              <input
-                type="number"
-                min={1}
-                max={8}
-                className="w-24 rounded-md border border-stone-300 px-3 py-2"
-                value={roomCount}
-                onChange={(e) => setRoomCount(Number(e.target.value))}
-              />
-            </div>
-            <div className="flex items-center gap-3">
-              <label className="text-sm font-medium text-stone-700">{t.booking.guests}</label>
-              <input
-                type="number"
-                min={1}
-                max={6}
-                className="w-24 rounded-md border border-stone-300 px-3 py-2"
-                value={guests}
-                onChange={(e) => setGuests(Number(e.target.value))}
-              />
-            </div>
-          </div>
-          <p className="text-sm text-stone-600">{t.booking.guestNote}</p>
+        <div className="grid gap-4 sm:grid-cols-2">
           <div>
-            <label className="text-sm font-medium text-stone-700">{t.booking.name}</label>
+            <label className="text-sm font-medium text-stone-700">{t.booking.checkIn}</label>
             <input
+              type="date"
               className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-              value={guestName}
-              onChange={(e) => setGuestName(e.target.value)}
-              required
+              value={checkIn}
+              onChange={(e) => setCheckIn(e.target.value)}
             />
           </div>
           <div>
-            <label className="text-sm font-medium text-stone-700">{t.booking.email}</label>
+            <label className="text-sm font-medium text-stone-700">{t.booking.checkOut}</label>
             <input
-              type="email"
+              type="date"
               className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-              value={guestEmail}
-              onChange={(e) => setGuestEmail(e.target.value)}
-              required
+              value={checkOut}
+              onChange={(e) => setCheckOut(e.target.value)}
             />
           </div>
-          <div>
-            <label className="text-sm font-medium text-stone-700">{t.booking.phone}</label>
-            <input
-              className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-              value={guestPhone}
-              onChange={(e) => setGuestPhone(e.target.value)}
-            />
-          </div>
-          <fieldset>
-            <legend className="text-sm font-medium text-stone-700">공항 픽업</legend>
-            <div className="mt-2 flex flex-wrap gap-2">
-              <button
-                type="button"
-                aria-pressed={!pickup}
-                onClick={() => setPickup(false)}
-                className={`border px-3 py-2 text-sm ${!pickup ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
-              >
-                필요 없음
-              </button>
-              <button
-                type="button"
-                aria-pressed={pickup}
-                onClick={() => setPickup(true)}
-                className={`border px-3 py-2 text-sm ${pickup ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
-              >
-                픽업 요청
-              </button>
-            </div>
-            <p className="mt-3 text-sm text-[#5e676c]">차량 한 대당 USD 27입니다.</p>
-            {pickup ? (
-              <div className="mt-4 grid gap-4 sm:grid-cols-3">
+        </div>
+        <button
+          type="button"
+          onClick={() => void loadAvail()}
+          disabled={loadingAvail}
+          className="rounded-md border border-stone-300 px-4 py-2 text-sm hover:bg-stone-50"
+        >
+          {loadingAvail ? t.common.loading : t.booking.reloadAvail}
+        </button>
+        <div className="space-y-2">
+          {rooms.map((r) => (
+            <label
+              key={r.id}
+              className={`flex cursor-pointer items-center justify-between rounded-lg border px-4 py-3 ${
+                selectedId === r.id ? "border-stone-900 bg-stone-50" : "border-stone-200"
+              }`}
+            >
+              <div className="flex items-center gap-3">
+                <input
+                  type="radio"
+                  name="room"
+                  checked={selectedId === r.id}
+                  onChange={() => setSelectedId(r.id)}
+                />
                 <div>
-                  <label className="text-sm font-medium text-stone-700">도착 시간</label>
-                  <input
-                    type="datetime-local"
-                    className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-                    value={arrivalTime}
-                    onChange={(e) => setArrivalTime(e.target.value)}
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-stone-700">항공편</label>
-                  <input
-                    className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-                    value={flightNumber}
-                    onChange={(e) => setFlightNumber(e.target.value)}
-                    placeholder="KE 123"
-                    required
-                  />
-                </div>
-                <div>
-                  <label className="text-sm font-medium text-stone-700">차량 수</label>
-                  <input
-                    type="number"
-                    min={1}
-                    max={10}
-                    className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-                    value={vehicles}
-                    onChange={(e) => setVehicles(Number(e.target.value))}
-                    required
-                  />
-                  <p className="mt-1 text-xs text-[#5e676c]">USD {Math.max(1, vehicles) * 27}</p>
+                  <p className="font-medium text-stone-900">{r.nameKo}</p>
                 </div>
               </div>
-            ) : null}
-          </fieldset>
-          <fieldset>
-            <legend className="text-sm font-medium text-stone-700">학생 할인</legend>
-            <div className="mt-2 flex flex-wrap gap-2">
-              {(
-                [
-                  ["none", "해당 없음"],
-                  ["highschool", "고등학생"],
-                  ["university", "대학생"],
-                ] as const
-              ).map(([value, label]) => (
-                <button
-                  key={value}
-                  type="button"
-                  aria-pressed={student === value}
-                  onClick={() => setStudent(value)}
-                  className={`border px-3 py-2 text-sm ${student === value ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
-                >
-                  {label}
-                </button>
-              ))}
-            </div>
-          </fieldset>
-          <div>
-            <label className="text-sm font-medium text-stone-700">메모</label>
-            <textarea
-              className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
-              rows={4}
-              value={note}
-              onChange={(e) => setNote(e.target.value)}
-              placeholder="일정이나 할인 확인에 필요한 내용을 적어 주세요."
+            </label>
+          ))}
+        </div>
+        <div className="flex flex-wrap gap-x-20 gap-y-6 pb-4 sm:gap-x-36">
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-stone-700">{t.booking.roomCount}</label>
+            <input
+              type="number"
+              min={1}
+              max={8}
+              className="w-24 rounded-md border border-stone-300 px-3 py-2"
+              value={roomCount}
+              onChange={(e) => setRoomCount(Number(e.target.value))}
             />
           </div>
-          {err && <p className="text-sm text-red-600">{err}</p>}
-          <button
-            type="button"
-            disabled={sending}
-            onClick={() => {
-              setErr(null);
-              if (!selected || selected.availableLocal < 1) {
-                setErr(t.booking.noRoom);
-                return;
-              }
-              void sendRequest().catch((e) => setErr(e instanceof Error ? e.message : t.common.error));
-            }}
-            className="w-full rounded-md bg-stone-900 py-2.5 text-sm font-medium text-white hover:bg-stone-800 disabled:opacity-60"
-          >
-            {sending ? "보내는 중…" : t.booking.create}
-          </button>
+          <div className="flex items-center gap-3">
+            <label className="text-sm font-medium text-stone-700">{t.booking.guests}</label>
+            <input
+              type="number"
+              min={1}
+              max={6}
+              className="w-24 rounded-md border border-stone-300 px-3 py-2"
+              value={guests}
+              onChange={(e) => setGuests(Number(e.target.value))}
+            />
+          </div>
         </div>
+        <p className="text-sm text-stone-600">{t.booking.guestNote}</p>
+        <div>
+          <label className="text-sm font-medium text-stone-700">{t.booking.name}</label>
+          <input
+            className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+            value={guestName}
+            onChange={(e) => setGuestName(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-stone-700">{t.booking.email}</label>
+          <input
+            type="email"
+            className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+            value={guestEmail}
+            onChange={(e) => setGuestEmail(e.target.value)}
+            required
+          />
+        </div>
+        <div>
+          <label className="text-sm font-medium text-stone-700">{t.booking.phone}</label>
+          <input
+            className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+            value={guestPhone}
+            onChange={(e) => setGuestPhone(e.target.value)}
+          />
+        </div>
+        <fieldset>
+          <legend className="text-sm font-medium text-stone-700">{t.booking.airportPickup}</legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            <button
+              type="button"
+              aria-pressed={!pickup}
+              onClick={() => setPickup(false)}
+              className={`border px-3 py-2 text-sm ${!pickup ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
+            >
+              {t.booking.pickupNone}
+            </button>
+            <button
+              type="button"
+              aria-pressed={pickup}
+              onClick={() => setPickup(true)}
+              className={`border px-3 py-2 text-sm ${pickup ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
+            >
+              {t.booking.pickupRequest}
+            </button>
+          </div>
+          <p className="mt-3 text-sm text-[#5e676c]">{t.booking.pickupPrice}</p>
+          {pickup ? (
+            <div className="mt-4 grid gap-4 sm:grid-cols-3">
+              <div>
+                <label className="text-sm font-medium text-stone-700">{t.booking.arrivalTime}</label>
+                <input
+                  type="datetime-local"
+                  className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+                  value={arrivalTime}
+                  onChange={(e) => setArrivalTime(e.target.value)}
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-stone-700">{t.booking.flightNumber}</label>
+                <input
+                  className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+                  value={flightNumber}
+                  onChange={(e) => setFlightNumber(e.target.value)}
+                  placeholder="KE 123"
+                  required
+                />
+              </div>
+              <div>
+                <label className="text-sm font-medium text-stone-700">{t.booking.vehicleCount}</label>
+                <input
+                  type="number"
+                  min={1}
+                  max={10}
+                  className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+                  value={vehicles}
+                  onChange={(e) => setVehicles(Number(e.target.value))}
+                  required
+                />
+                <p className="mt-1 text-xs text-[#5e676c]">USD {Math.max(1, vehicles) * 27}</p>
+              </div>
+            </div>
+          ) : null}
+        </fieldset>
+        <fieldset>
+          <legend className="text-sm font-medium text-stone-700">{t.booking.studentDiscount}</legend>
+          <div className="mt-2 flex flex-wrap gap-2">
+            {studentOptions.map(([value, label]) => (
+              <button
+                key={value}
+                type="button"
+                aria-pressed={student === value}
+                onClick={() => setStudent(value)}
+                className={`border px-3 py-2 text-sm ${student === value ? "border-[#1b1d1f] bg-[#1b1d1f] text-white" : "border-stone-300"}`}
+              >
+                {label}
+              </button>
+            ))}
+          </div>
+        </fieldset>
+        <div>
+          <label className="text-sm font-medium text-stone-700">{t.booking.note}</label>
+          <textarea
+            className="mt-1 w-full rounded-md border border-stone-300 px-3 py-2"
+            rows={4}
+            value={note}
+            onChange={(e) => setNote(e.target.value)}
+            placeholder={t.booking.notePlaceholder}
+          />
+        </div>
+        {err && <p className="text-sm text-red-600">{err}</p>}
+        <button
+          type="button"
+          disabled={sending}
+          onClick={() => {
+            setErr(null);
+            if (!selected || selected.availableLocal < 1) {
+              setErr(t.booking.noRoom);
+              return;
+            }
+            void sendRequest().catch((e) => setErr(e instanceof Error ? e.message : t.common.error));
+          }}
+          className="w-full rounded-md bg-stone-900 py-2.5 text-sm font-medium text-white hover:bg-stone-800 disabled:opacity-60"
+        >
+          {sending ? t.booking.sending : t.booking.create}
+        </button>
+      </div>
 
       {sentOpen ? (
         <div className="fixed inset-0 z-[80] flex items-center justify-center bg-[#1b1d1f]/50 p-4" role="presentation" onClick={() => setSentOpen(false)}>
@@ -372,13 +372,11 @@ export function BookingWizard({ tenantSlug }: Props) {
             onClick={(e) => e.stopPropagation()}
           >
             <h2 id="booking-sent-title" className="text-xl font-semibold tracking-[-0.03em]">
-              요청을 보냈습니다
+              {t.booking.sentTitle}
             </h2>
-            <p className="mt-3 text-sm leading-7 text-[#5e676c]">
-              호텔에서 객실 가능 여부를 확인한 후 이메일로 안내해 드립니다. 예약은 호텔의 확정 안내를 받으신 후 최종 확정됩니다.
-            </p>
+            <p className="mt-3 text-sm leading-7 text-[#5e676c]">{t.booking.sentBody}</p>
             <button type="button" className="mt-6 bg-[#1b1d1f] px-5 py-2.5 text-sm text-white" onClick={() => setSentOpen(false)}>
-              확인
+              {t.booking.sentConfirm}
             </button>
           </div>
         </div>

@@ -43,6 +43,8 @@ export async function POST(req: Request, ctx: Ctx) {
       body: row.body,
       contact: row.contact,
       reservationCode: row.reservationCode,
+      // Tenant public contact (hello@hotellotus.in for lotus-india) is always included with defaults.
+      extraRecipients: [tenant.email],
     });
   } catch {
     return NextResponse.json({ id: row.id, error: "메일을 보내지 못했습니다. 잠시 후 다시 시도해 주세요." }, { status: 502 });

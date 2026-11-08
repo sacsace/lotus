@@ -47,7 +47,7 @@ export function HotelJsonLd({ slug, nameKo, address, phone, email }: Props) {
         "@id": `${url}#website`,
         url,
         name: SITE_NAME,
-        inLanguage: ["ko", "en"],
+        inLanguage: ["ko", "en", "zh", "ja"],
         publisher: { "@id": `${url}#hotel` },
       },
     ],

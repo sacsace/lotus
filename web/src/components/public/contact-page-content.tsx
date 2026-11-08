@@ -27,9 +27,9 @@ export function ContactPageContent({ tenantSlug, phone, email, whatsapp, address
       <section className="mx-auto max-w-6xl bg-white px-5 py-8 sm:px-12 sm:py-12">
         <div className="flex items-end justify-between gap-6 border-b border-[#1b1d1f] pb-4">
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">05 / Contact</p>
-          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">문의</h1>
+          <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.contact.title}</h1>
         </div>
-        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">숙박, 장기 체류, 공항 픽업에 관한 문의를 남겨 주세요.</p>
+        <p className="mt-5 max-w-md break-keep text-sm leading-6 text-[#5e676c]">{t.contact.subtitle}</p>
         <div className="mt-10 grid items-start gap-12 lg:grid-cols-2">
           <div>
             <div className="border-t border-[#1b1d1f]">
