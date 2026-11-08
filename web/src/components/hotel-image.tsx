@@ -15,9 +15,18 @@ type Props = ImageProps & {
   variant?: HotelPhotoVariant;
 };
 
-export function HotelImage({ variant = "card", className = "", alt = "", ...props }: Props) {
+export function HotelImage({ variant = "card", className = "", alt = "", unoptimized, ...props }: Props) {
   const base = VARIANT_CLASS[variant];
-  return <Image {...props} alt={alt} className={className ? `${base} ${className}` : base} />;
+  const src = typeof props.src === "string" ? props.src : "";
+  const skipOptimize = unoptimized ?? src.startsWith("/uploads/");
+  return (
+    <Image
+      {...props}
+      alt={alt}
+      unoptimized={skipOptimize}
+      className={className ? `${base} ${className}` : base}
+    />
+  );
 }
 
 export function HotelPhotoFrame({

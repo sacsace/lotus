@@ -3,6 +3,7 @@ import { prisma } from "@/lib/prisma";
 import { PAGE_SEO, buildMetadata } from "@/lib/seo";
 import { getTenantBySlug } from "@/lib/tenant";
 import { PUBLIC_ROOM_CODES, sortRoomTypes } from "@/lib/lotus-rooms";
+import { getRoomGalleryUrls } from "@/lib/room-photos";
 import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 
@@ -25,6 +26,13 @@ export default async function RoomsPage({ params }: Props) {
   const roomTypes = await prisma.roomType.findMany({
     where: { tenantId: tenant.id, code: { in: [...PUBLIC_ROOM_CODES] } },
   });
+  const sorted = sortRoomTypes(roomTypes);
+  const withGalleries = await Promise.all(
+    sorted.map(async (room) => ({
+      ...room,
+      gallery: await getRoomGalleryUrls(tenant.id, room.code, room.imageUrl),
+    })),
+  );
 
-  return <RoomsPageContent tenantSlug={tenant.slug} roomTypes={sortRoomTypes(roomTypes)} />;
+  return <RoomsPageContent tenantSlug={tenant.slug} roomTypes={withGalleries} />;
 }

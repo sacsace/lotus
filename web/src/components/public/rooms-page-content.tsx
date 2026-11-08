@@ -17,6 +17,7 @@ type RoomType = {
   imageUrl: string | null;
   inventory: number;
   baseRate: number;
+  gallery?: string[];
 };
 
 export function RoomsPageContent({ tenantSlug, roomTypes }: { tenantSlug: string; roomTypes: RoomType[] }) {
@@ -37,10 +38,11 @@ export function RoomsPageContent({ tenantSlug, roomTypes }: { tenantSlug: string
         <div className="mt-10 space-y-14">
           {roomTypes.map((room, i) => {
             const features: string[] = room.features ? JSON.parse(room.features) : ROOM_FEATURES;
+            const images = room.gallery?.length ? room.gallery : roomGalleryForCode(room.code, room.imageUrl);
             return (
               <article key={room.id} className="border-t border-[#1b1d1f] pt-8">
                 <div className="grid gap-8 lg:grid-cols-2 lg:items-start">
-                  <RoomSlides images={roomGalleryForCode(room.code, room.imageUrl)} alt={room.nameKo} />
+                  <RoomSlides images={images} alt={room.nameKo} />
                   <div>
                     <div className="flex items-start justify-between gap-6">
                       <div>

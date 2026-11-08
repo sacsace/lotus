@@ -23,7 +23,7 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
   ];
   const family = [
     { href: "https://www.mvsystem.in", label: "업무 통합 시스템 MVS" },
-    { href: "https://www.heresnow.in", label: "GPS 기반 출퇴근 근태 기록 시스템 HeresNow" },
+    { href: "https://www.heresnow.in", label: "GPS 기반 출퇴근 기록 시스템 HeresNow" },
     { href: "https://www.neocle.in", label: "수출입 전문기업 Neocle" },
     { href: "https://www.msventures.in", label: "비즈니스 컨설팅 MVS" },
   ];
@@ -55,7 +55,7 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
         </ul>
       </div>
       <p className="mt-8 text-xs tracking-[0.08em] text-[#1b1d1f]/45">
-        개발{" "}
+        Developed by{" "}
         <a href="https://www.msventures.in" target="_blank" rel="noopener noreferrer" className="hover:text-[#1b1d1f]">
           Minsub Ventures
         </a>

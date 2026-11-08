@@ -1,7 +1,8 @@
 import { NextResponse } from "next/server";
-import { mkdir, writeFile } from "node:fs/promises";
+import { writeFile } from "node:fs/promises";
 import path from "node:path";
 import { requirePermission } from "@/lib/admin-api";
+import { ensureUploadDir, publicUploadUrl } from "@/lib/uploads";
 
 const ALLOWED = new Set(["image/png", "image/jpeg", "image/webp", "image/gif"]);
 const MAX_BYTES = 8 * 1024 * 1024;
@@ -22,15 +23,13 @@ export async function POST(req: Request) {
     return NextResponse.json({ error: "No file" }, { status: 400 });
   }
   if (!ALLOWED.has(file.type)) {
-    return NextResponse.json({ error: "Unsupported file type" }, { status: 400 });
+    return NextResponse.json({ error: "지원하지 않는 파일 형식입니다." }, { status: 400 });
   }
   if (file.size > MAX_BYTES) {
-    return NextResponse.json({ error: "File too large (max 8MB)" }, { status: 400 });
+    return NextResponse.json({ error: "파일이 너무 큽니다. (최대 8MB)" }, { status: 400 });
   }
 
-  const dir = path.join(process.cwd(), "public", "uploads", category || "hero");
-  await mkdir(dir, { recursive: true });
-
+  const dir = await ensureUploadDir(category || "hero");
   const timestamp = Date.now();
   const safeName = sanitize(file.name || "upload");
   const filename = `${timestamp}-${safeName}`;
@@ -38,6 +37,6 @@ export async function POST(req: Request) {
   const bytes = Buffer.from(await file.arrayBuffer());
   await writeFile(filePath, bytes);
 
-  const url = `/uploads/${category || "hero"}/${filename}`;
+  const url = publicUploadUrl(category || "hero", filename);
   return NextResponse.json({ url, filename, size: file.size, type: file.type });
 }
