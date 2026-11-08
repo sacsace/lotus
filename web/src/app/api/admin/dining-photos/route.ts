@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePermission, getAdminTenant } from "@/lib/admin-api";
 import { logAdminAction } from "@/lib/audit";
-import { DINING_PHOTO_CATEGORY } from "@/lib/dining-photos";
+import { DINING_PHOTO_CATEGORY, ensureDiningGalleryAssets } from "@/lib/dining-photos";
 import { tryDeleteUpload } from "@/lib/uploads";
 
 async function revalidateDining(slug: string) {
@@ -18,10 +18,7 @@ export async function GET() {
   const tenant = await getAdminTenant();
   if (!tenant) return NextResponse.json({ error: "NO_TENANT" }, { status: 400 });
 
-  const photos = await prisma.mediaAsset.findMany({
-    where: { tenantId: tenant.id, category: DINING_PHOTO_CATEGORY },
-    orderBy: { sortOrder: "asc" },
-  });
+  const photos = await ensureDiningGalleryAssets(tenant.id);
 
   return NextResponse.json({
     tenant: { slug: tenant.slug, nameKo: tenant.nameKo },

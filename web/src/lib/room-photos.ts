@@ -10,38 +10,66 @@ export function parseRoomPhotoCode(category: string) {
   return match?.[1]?.toUpperCase() ?? null;
 }
 
-export async function getRoomGalleryUrls(tenantId: string, code: string, fallbackImageUrl?: string | null) {
-  const assets = await prisma.mediaAsset.findMany({
-    where: { tenantId, category: roomPhotoCategory(code) },
+function defaultsImportedKey(code: string) {
+  return `roomGalleryDefaultsImported-${code.toUpperCase()}`;
+}
+
+/** Keep existing uploads and import any missing default room images once per type. */
+export async function ensureRoomGalleryAssets(tenantId: string, code: string, fallbackImageUrl?: string | null) {
+  const category = roomPhotoCategory(code);
+  const existing = await prisma.mediaAsset.findMany({
+    where: { tenantId, category },
     orderBy: { sortOrder: "asc" },
   });
+
+  const flag = await prisma.siteContent.findUnique({
+    where: { tenantId_key: { tenantId, key: defaultsImportedKey(code) } },
+  });
+  if (flag?.value === "1") {
+    return existing;
+  }
+
+  const defaults = [...roomGalleryForCode(code, fallbackImageUrl)];
+  const existingUrls = new Set(existing.map((asset) => asset.url));
+  const missing = defaults.filter((url) => !existingUrls.has(url));
+  const nextOrder = existing.reduce((max, asset) => Math.max(max, asset.sortOrder), -1) + 1;
+
+  if (missing.length > 0) {
+    await prisma.mediaAsset.createMany({
+      data: missing.map((url, index) => ({
+        tenantId,
+        category,
+        url,
+        alt: `${code} Room`,
+        sortOrder: nextOrder + index,
+      })),
+    });
+  }
+
+  await prisma.siteContent.upsert({
+    where: { tenantId_key: { tenantId, key: defaultsImportedKey(code) } },
+    update: { value: "1" },
+    create: { tenantId, key: defaultsImportedKey(code), value: "1" },
+  });
+
+  return prisma.mediaAsset.findMany({
+    where: { tenantId, category },
+    orderBy: { sortOrder: "asc" },
+  });
+}
+
+export async function getRoomGalleryUrls(tenantId: string, code: string, fallbackImageUrl?: string | null) {
+  const assets = await ensureRoomGalleryAssets(tenantId, code, fallbackImageUrl);
   if (assets.length > 0) {
-    return assets.map((a) => a.url);
+    return assets.map((asset) => asset.url);
   }
   return [...roomGalleryForCode(code, fallbackImageUrl)];
 }
 
 export async function getRoomGalleriesByCode(tenantId: string, codes: string[]) {
-  const assets = await prisma.mediaAsset.findMany({
-    where: {
-      tenantId,
-      category: { in: codes.map(roomPhotoCategory) },
-    },
-    orderBy: { sortOrder: "asc" },
-  });
-
   const map = new Map<string, string[]>();
-  for (const code of codes) map.set(code, []);
-  for (const asset of assets) {
-    const code = parseRoomPhotoCode(asset.category);
-    if (!code || !map.has(code)) continue;
-    map.get(code)!.push(asset.url);
-  }
-
   for (const code of codes) {
-    if ((map.get(code) ?? []).length === 0) {
-      map.set(code, [...roomGalleryForCode(code, HOTEL_IMAGES.rooms[code as keyof typeof HOTEL_IMAGES.rooms])]);
-    }
+    map.set(code, await getRoomGalleryUrls(tenantId, code, HOTEL_IMAGES.rooms[code as keyof typeof HOTEL_IMAGES.rooms]));
   }
   return map;
 }

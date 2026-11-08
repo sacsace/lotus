@@ -192,7 +192,7 @@ export function RoomPhotosEditor() {
               <h2 className="font-semibold">{activeRoom.nameKo} 사진</h2>
               <p className="mt-1 text-xs text-muted">
                 공개 객실 페이지 슬라이드에 표시됩니다. PNG / JPG / WebP, 최대 8MB. 순서가 작을수록 먼저 보입니다.
-                사진을 하나도 올리지 않으면 기본 이미지가 사용됩니다.
+                기존 기본 사진도 목록에 포함되며, 새로 올리면 기존 사진 뒤에 추가됩니다. 삭제한 사진만 목록에서 빠집니다.
               </p>
             </div>
           </div>
@@ -200,7 +200,7 @@ export function RoomPhotosEditor() {
           <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
             {activePhotos.length === 0 ? (
               <p className="col-span-full rounded-lg bg-stone-50 p-6 text-center text-sm text-muted">
-                아직 올린 사진이 없습니다. 기본 객실 이미지가 공개 페이지에 표시됩니다.
+                표시할 객실 사진이 없습니다. 아래에서 사진을 추가해 주세요.
               </p>
             ) : null}
             {activePhotos.map((asset, index) => (

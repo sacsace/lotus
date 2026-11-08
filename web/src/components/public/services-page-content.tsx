@@ -15,7 +15,7 @@ export function ServicesPageContent({ tenantSlug }: { tenantSlug: string }) {
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">04 / Services</p>
           <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">서비스</h1>
         </div>
-        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">머무는 동안 프런트에 부탁할 수 있는 일입니다.</p>
+        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">{t.services.subtitle}</p>
         <div className="mt-10 grid gap-x-12 lg:grid-cols-2">
           {SERVICE_IDS.map((id, i) => {
             const item = t.services.items[id as ServiceId];

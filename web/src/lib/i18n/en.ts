@@ -76,49 +76,49 @@ export const en: Dictionary = {
   services: {
     label: "Guest Services",
     title: "Services",
-    subtitle: "Comprehensive support for Korean business travelers in India.",
+    subtitle: "We offer a range of services for a comfortable stay. Please contact the front desk for assistance.",
     needHelp: "Need assistance?",
-    needHelpDesc: "Contact our front desk for any service request.",
+    needHelpDesc: "Tell the front desk which service you need or what you would like to ask.",
     items: {
       airport: {
         title: "Airport Pickup",
-        desc: "USD 27 per vehicle. Share your flight and arrival time, and we will bring you to the hotel.",
+        desc: "Airport pickup is USD 27 per vehicle. Share your flight and arrival time in advance, and we will arrange a car.",
       },
       laundry: {
         title: "Laundry",
-        desc: "Laundry is included in the stay. Dry cleaning is not available.",
+        desc: "Regular laundry is included in the stay rate. Dry cleaning is not available.",
       },
       netflix: {
         title: "Netflix",
-        desc: "You can watch Netflix in the room.",
+        desc: "You can watch Netflix in your room.",
       },
       frro: {
         title: "FRRO Support",
-        desc: "Assistance with Foreigners Regional Registration Office documentation.",
+        desc: "We guide you through the documents and application steps needed for FRRO registration.",
       },
       cform: {
-        title: "C-Form Support",
-        desc: "Hotel C-Form registration and compliance for foreign nationals.",
+        title: "C-Form Registration",
+        desc: "C-Form lodging registration for foreign guests is handled by the hotel.",
       },
       longstay: {
-        title: "Long-Stay Support",
-        desc: "Extended stay packages with housekeeping and corporate billing.",
+        title: "Long Stay",
+        desc: "We offer packages for long-stay guests, including room cleaning and corporate billing.",
       },
       homestay: {
         title: "Homestay",
-        desc: "You can request a homestay along with a hotel stay. Ask the front desk about dates.",
+        desc: "Ask the front desk if you would like a homestay. We will check availability and dates for you.",
       },
       corporate: {
-        title: "Corporate Guest Support",
-        desc: "Dedicated account management for company travelers and group bookings.",
+        title: "Corporate Guests",
+        desc: "We provide tailored consultation and booking support for business trips and group reservations.",
       },
       housekeeping: {
         title: "Housekeeping",
-        desc: "Daily room cleaning with amenity replenishment.",
+        desc: "We clean the room daily and replenish amenities as needed.",
       },
       transport: {
         title: "Transportation",
-        desc: "Local transportation assistance and corporate car arrangements.",
+        desc: "We help arrange local transport and cars for business travel.",
       },
     },
   },

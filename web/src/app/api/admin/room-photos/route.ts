@@ -3,7 +3,7 @@ import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePermission, getAdminTenant } from "@/lib/admin-api";
 import { logAdminAction } from "@/lib/audit";
-import { parseRoomPhotoCode, roomPhotoCategory, syncRoomTypeCover } from "@/lib/room-photos";
+import { ensureRoomGalleryAssets, parseRoomPhotoCode, roomPhotoCategory, syncRoomTypeCover } from "@/lib/room-photos";
 import { tryDeleteUpload } from "@/lib/uploads";
 
 async function revalidateRooms(slug: string) {
@@ -18,25 +18,15 @@ export async function GET() {
   const tenant = await getAdminTenant();
   if (!tenant) return NextResponse.json({ error: "NO_TENANT" }, { status: 400 });
 
-  const [roomTypes, media] = await Promise.all([
-    prisma.roomType.findMany({
-      where: { tenantId: tenant.id },
-      orderBy: { code: "asc" },
-      select: { id: true, code: true, nameKo: true, imageUrl: true },
-    }),
-    prisma.mediaAsset.findMany({
-      where: { tenantId: tenant.id, category: { startsWith: "room-" } },
-      orderBy: [{ category: "asc" }, { sortOrder: "asc" }],
-    }),
-  ]);
+  const roomTypes = await prisma.roomType.findMany({
+    where: { tenantId: tenant.id },
+    orderBy: { code: "asc" },
+    select: { id: true, code: true, nameKo: true, imageUrl: true },
+  });
 
-  const byCode: Record<string, typeof media> = {};
-  for (const type of roomTypes) byCode[type.code] = [];
-  for (const asset of media) {
-    const code = parseRoomPhotoCode(asset.category);
-    if (!code) continue;
-    if (!byCode[code]) byCode[code] = [];
-    byCode[code].push(asset);
+  const byCode: Record<string, Awaited<ReturnType<typeof ensureRoomGalleryAssets>>> = {};
+  for (const type of roomTypes) {
+    byCode[type.code] = await ensureRoomGalleryAssets(tenant.id, type.code, type.imageUrl);
   }
 
   return NextResponse.json({ tenant: { slug: tenant.slug, nameKo: tenant.nameKo }, roomTypes, photos: byCode });
