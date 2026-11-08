@@ -25,7 +25,7 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
     { href: "https://www.mvsystem.in", label: "업무 통합 시스템 MVS" },
     { href: "https://www.heresnow.in", label: "GPS 기반 출퇴근 기록 시스템 HeresNow" },
     { href: "https://www.neocle.in", label: "수출입 전문기업 Neocle" },
-    { href: "https://www.msventures.in", label: "비즈니스 컨설팅 MVS" },
+    { href: "https://www.msventures.in", label: "비즈니스 컨설팅 MSV" },
   ];
 
   return (
@@ -43,7 +43,7 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
         {[phone, email, address].filter(Boolean).join(" · ")}
       </p>
       <div className="mx-auto mt-8 max-w-3xl">
-        <p className="text-[11px] tracking-[0.18em] text-[#1b1d1f]/45">Family site</p>
+        <p className="text-[11px] tracking-[0.18em] text-[#1b1d1f]/45">관련 사이트</p>
         <ul className="mt-3 flex flex-col items-center gap-2 text-sm text-[#1b1d1f]/70">
           {family.map((site) => (
             <li key={site.href}>

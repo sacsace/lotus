@@ -9,6 +9,9 @@ export type HansikMenuSection = {
   wide?: boolean;
 };
 
+export const HANSIK_MENU_NOTE =
+  "가격은 인도 루피(INR) 기준이며, GST는 별도입니다.";
+
 export const HANSIK_MENU: HansikMenuSection[] = [
   {
     index: "01",
@@ -23,10 +26,10 @@ export const HANSIK_MENU: HansikMenuSection[] = [
     index: "02",
     title: "찜류",
     items: [
-      { name: "소갈비 찜", price: "800" },
-      { name: "돼지갈비 찜", price: "800" },
-      { name: "김치 찜 (돼지/닭)", price: "800" },
-      { name: "모듬 해물 찜", price: "소 1200 / 대 1800" },
+      { name: "소갈비찜", price: "800" },
+      { name: "돼지갈비찜", price: "800" },
+      { name: "김치찜(돼지고기/닭고기)", price: "800" },
+      { name: "모둠 해물찜", price: "소 1200 / 대 1800" },
     ],
   },
   {
@@ -51,35 +54,35 @@ export const HANSIK_MENU: HansikMenuSection[] = [
       { name: "갈비탕", price: "700" },
       { name: "육개장", price: "700" },
       { name: "설렁탕", price: "700" },
-      { name: "백숙 (2인/예약)", price: "1000" },
-      { name: "삼계탕 (2인/예약)", price: "1200" },
-      { name: "감자탕 (2인/예약)", price: "700" },
+      { name: "백숙(2인분·사전 예약)", price: "1000" },
+      { name: "삼계탕(2인분·사전 예약)", price: "1200" },
+      { name: "감자탕(2인분·사전 예약)", price: "700" },
     ],
   },
   {
     index: "05",
-    title: "접시요리",
+    title: "일품요리",
     wide: true,
     items: [
       { name: "골뱅이소면 무침", price: "1200" },
       { name: "소고기 불고기", price: "900" },
       { name: "돼지 불고기", price: "800" },
-      { name: "두부 김치", price: "800" },
-      { name: "탕수육 (치킨)", price: "700" },
+      { name: "두부김치", price: "800" },
+      { name: "닭고기 탕수육", price: "700" },
       { name: "제육볶음", price: "700" },
       { name: "오징어볶음", price: "700" },
       { name: "오삼불고기", price: "700" },
-      { name: "깐소새우", price: "700" },
+      { name: "깐쇼새우", price: "700" },
       { name: "새우마요네즈", price: "700" },
       { name: "새우튀김 (6개)", price: "600" },
       { name: "버터새우", price: "1000" },
       { name: "닭똥집", price: "500" },
-      { name: "후라이드 치킨", price: "H 600 / F 900" },
-      { name: "양념 치킨", price: "H 700 / F 1000" },
+      { name: "프라이드치킨", price: "반 마리 600 / 한 마리 900" },
+      { name: "양념 치킨", price: "반 마리 700 / 한 마리 1000" },
       { name: "반반 치킨", price: "1000" },
       { name: "치킨윙 (6조각)", price: "500" },
-      { name: "안동찜닭 (2인/예약)", price: "800" },
-      { name: "닭발 (2인/예약)", price: "1200" },
+      { name: "안동찜닭(2인분·사전 예약)", price: "800" },
+      { name: "닭발(2인분·사전 예약)", price: "1200" },
       { name: "군만두 (야채/김치/고기)", price: "300 / 400 / 400" },
       { name: "감자전", price: "600" },
       { name: "김치전", price: "600" },
@@ -105,9 +108,9 @@ export const HANSIK_MENU: HansikMenuSection[] = [
   },
   {
     index: "07",
-    title: "밥류",
+    title: "식사류",
     items: [
-      { name: "만두국", price: "800" },
+      { name: "만둣국", price: "800" },
       { name: "짬뽕밥", price: "700" },
       { name: "치킨까스", price: "700" },
       { name: "생선까스", price: "700" },
@@ -117,7 +120,7 @@ export const HANSIK_MENU: HansikMenuSection[] = [
       { name: "비빔밥", price: "650" },
       { name: "잡채덮밥", price: "800" },
       { name: "볶음밥", price: "700" },
-      { name: "공기밥", price: "150" },
+      { name: "공깃밥", price: "150" },
     ],
   },
   {
@@ -133,6 +136,13 @@ export const HANSIK_MENU: HansikMenuSection[] = [
     ],
   },
 ];
+
+/** Display menu prices with ₹. Leaves already-formatted strings alone. */
+export function formatHansikPrice(price: string): string {
+  const value = price.trim();
+  if (!value || value.includes("₹")) return value;
+  return value.replace(/\d{3,}/g, (digits) => `₹${Number(digits).toLocaleString("en-IN")}`);
+}
 
 export function normalizeHansikMenu(input: unknown): HansikMenuSection[] | null {
   if (!Array.isArray(input)) return null;

@@ -69,14 +69,14 @@ export const en: Dictionary = {
     subtitle: "Authentic Korean breakfast and dinner — daily menu updated by our culinary team.",
     breakfast: "Korean Breakfast",
     dinner: "Korean Dinner",
-    todayMenu: "Today's menu",
+    todayMenu: "Meal composition",
     galleryAlt: "Dining environment",
     defaultItems: ["Rice", "Soup", "Main dish", "Bread", "Side dishes"],
   },
   services: {
     label: "Guest Services",
     title: "Services",
-    subtitle: "We offer a range of services for a comfortable stay. Please contact the front desk for assistance.",
+    subtitle: "We offer a range of services for a comfortable stay. For service inquiries, please contact the front desk.",
     needHelp: "Need assistance?",
     needHelpDesc: "Tell the front desk which service you need or what you would like to ask.",
     items: {
@@ -90,19 +90,19 @@ export const en: Dictionary = {
       },
       netflix: {
         title: "Netflix",
-        desc: "You can watch Netflix in your room.",
+        desc: "You can watch Netflix in your room. Sign in with your personal account.",
       },
       frro: {
         title: "FRRO Support",
         desc: "We guide you through the documents and application steps needed for FRRO registration.",
       },
       cform: {
-        title: "C-Form Registration",
+        title: "Foreign Guest Lodging Report (C-Form)",
         desc: "C-Form lodging registration for foreign guests is handled by the hotel.",
       },
       longstay: {
         title: "Long Stay",
-        desc: "We offer packages for long-stay guests, including room cleaning and corporate billing.",
+        desc: "We offer packages for long-stay guests. Room cleaning is included, and invoices can be issued under a company name.",
       },
       homestay: {
         title: "Homestay",
@@ -132,7 +132,7 @@ export const en: Dictionary = {
     address: "Address",
     whatsapp: "WhatsApp",
     formTitle: "Send an Inquiry",
-    formSubtitle: "We respond within 24 hours for business inquiries.",
+    formSubtitle: "We will reply to your inquiry within 24 hours.",
   },
   footer: {
     explore: "Explore",
@@ -157,20 +157,21 @@ export const en: Dictionary = {
   booking: {
     step1: "1. Dates & room",
     step2: "2. Guest info",
-    step3: "3. Payment (demo)",
+    step3: "3. Email request",
     checkIn: "Check-in",
     checkOut: "Check-out",
-    reloadAvail: "Refresh availability",
+    reloadAvail: "Check available rooms again",
     nightsRemaining: "{nights} nights · {count} available",
     perNightPrice: "(₹{price} per night)",
     guests: "Guests",
     selectRoom: "Please select a room type.",
     noRoom: "No room selected or unavailable.",
-    guestNote: "Book without login. Look up your reservation with code + email.",
+    guestNote:
+      "After you submit a booking request, the hotel will check availability and email you. Your stay is confirmed only after you receive the hotel’s confirmation. If you qualify for a student discount, select High school or University below. Discount rates and terms are shared when the booking is confirmed, and a student ID may be required.",
     name: "Full name",
     email: "Email",
     phone: "Phone (optional)",
-    create: "Create reservation",
+    create: "Send booking request",
     reservationCode: "Reservation {code}",
     payNote: "In demo mode, simulate payment below. Production uses a payment gateway.",
     payMock: "Simulate payment",
@@ -189,7 +190,8 @@ export const en: Dictionary = {
   pages: {
     book: {
       title: "Online booking — {name}",
-      subtitle: "No account required. Payment is simulated with a demo button.",
+      subtitle:
+        "After you submit a booking request, the hotel will check availability and email you. Your stay is confirmed only after you receive the hotel’s confirmation.",
     },
     myReservation: {
       title: "My reservation — {name}",

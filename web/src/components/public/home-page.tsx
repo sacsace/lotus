@@ -123,9 +123,9 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
               <div className="mb-5 h-px w-14 bg-white/45" />
               <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">01 /</p>
               <h1 className="mt-2 text-[4.25rem] font-bold leading-[0.86] tracking-[-0.05em] sm:text-8xl lg:text-[6.5rem]">
-                숙박을
+                객실
                 <br />
-                예약하세요
+                예약
               </h1>
             </div>
             <Link href="#rooms" className="mt-12 block w-fit">
@@ -198,7 +198,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             </div>
             <div className="grid border-t border-[#e6ebed] sm:grid-cols-2">
               <label className="border-b border-[#e6ebed] px-6 py-8 sm:border-b-0 sm:border-r sm:px-10">
-                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">도착</span>
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">체크인</span>
                 <input
                   type="date"
                   value={checkIn}
@@ -207,7 +207,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
                 />
               </label>
               <label className="px-6 py-8 sm:px-10">
-                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">출발</span>
+                <span className="text-[11px] tracking-[0.16em] text-[#8b9398]">체크아웃</span>
                 <input
                   type="date"
                   value={checkOut}
@@ -220,7 +220,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
 
           <div className="flex justify-end border-t border-[#e6ebed]">
             <button type="button" onClick={goBook} className="bg-[#aebcc3] px-8 py-6 text-sm text-white hover:bg-[#9aadb6]">
-              예약 가능 확인
+              예약 가능 여부 확인
               <span aria-hidden className="ml-3">
                 ↓
               </span>
@@ -236,7 +236,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">객실</h2>
           </div>
           <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">
-            출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식, 객실 청소 및 세탁 서비스가 포함되어 있습니다. 고등학생·대학생 특별 할인이 있습니다. 예약 요청을 보낼 때 해당 여부를 선택해 주세요.
+            출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식과 석식, 객실 청소 및 일반 세탁 서비스가 포함되어 있습니다. 학생 할인 대상에 해당하시면 예약 신청 시 학생 구분을 선택해 주세요. 할인율과 적용 조건은 예약 확정 시 안내하며, 학생증 확인이 필요할 수 있습니다.
           </p>
           <div className="mt-8 grid gap-10 lg:grid-cols-2">
             {roomCards.map((room, i) => (
@@ -271,7 +271,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
           <div className="mt-8 grid items-start gap-10 lg:grid-cols-[1.35fr_0.8fr]">
             <BreakfastSlider images={foodSlides} className="aspect-square sm:aspect-[5/4]" />
             <div>
-              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">아침과 저녁, 정성껏 준비한 한식을 제공합니다</p>
+              <p className="text-2xl font-bold leading-snug tracking-[-0.04em]">조식과 석식, 정성껏 준비한 한식을 제공합니다</p>
               <p className="mt-4 text-sm leading-7 text-[#5e676c]">
                 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다. 단체 식사는 예약 시 문의해 주세요.
               </p>

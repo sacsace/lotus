@@ -64,17 +64,17 @@ export const ko = {
   dining: {
     label: "Hansik Dabang",
     title: "한식 다이닝",
-    subtitle: "정통 한식 아침·저녁 — 셰프가 매일 업데이트하는 메뉴를 제공합니다.",
-    breakfast: "한식 아침",
-    dinner: "한식 저녁",
-    todayMenu: "오늘의 메뉴",
+    subtitle: "정통 한식 조식·석식 — 셰프가 매일 업데이트하는 메뉴를 제공합니다.",
+    breakfast: "한식 조식",
+    dinner: "한식 석식",
+    todayMenu: "식사 구성",
     galleryAlt: "다이닝 공간",
     defaultItems: ["밥", "국", "메인 요리", "빵", "반찬"],
   },
   services: {
     label: "고객 서비스",
     title: "서비스",
-    subtitle: "편안한 투숙을 위한 다양한 서비스를 제공합니다. 이용 문의는 프런트 데스크로 연락해 주세요.",
+    subtitle: "편안한 투숙을 위한 다양한 서비스를 제공합니다. 서비스 이용에 관한 문의는 프런트 데스크로 연락해 주세요.",
     needHelp: "도움이 필요하신가요?",
     needHelpDesc: "원하시는 서비스나 문의 사항을 프런트 데스크에 알려 주세요.",
     items: {
@@ -88,19 +88,19 @@ export const ko = {
       },
       netflix: {
         title: "넷플릭스",
-        desc: "객실에서 넷플릭스를 시청하실 수 있습니다.",
+        desc: "객실에서 넷플릭스를 시청하실 수 있습니다. 개인 계정으로 로그인하여 이용하실 수 있습니다.",
       },
       frro: {
         title: "FRRO 지원",
         desc: "외국인 등록(FRRO)에 필요한 서류 준비와 신청 절차를 안내해 드립니다.",
       },
       cform: {
-        title: "C-Form 등록",
+        title: "외국인 숙박 신고(C-Form)",
         desc: "외국인 투숙객의 숙박 신고(C-Form)는 호텔에서 진행합니다.",
       },
       longstay: {
         title: "장기 숙박",
-        desc: "장기 투숙객을 위한 숙박 패키지를 제공합니다. 객실 청소 서비스와 법인 명의 청구가 가능합니다.",
+        desc: "장기 투숙객을 위한 숙박 패키지를 제공합니다. 객실 청소 서비스를 제공하며, 법인 명의로 인보이스를 발행해 드립니다.",
       },
       homestay: {
         title: "홈스테이",
@@ -130,7 +130,7 @@ export const ko = {
     address: "주소",
     whatsapp: "WhatsApp",
     formTitle: "문의 보내기",
-    formSubtitle: "비즈니스 문의는 24시간 이내 답변드립니다.",
+    formSubtitle: "문의하신 내용은 24시간 이내에 답변드립니다.",
   },
   footer: {
     explore: "둘러보기",
@@ -157,13 +157,14 @@ export const ko = {
     step3: "3. 메일 요청",
     checkIn: "체크인",
     checkOut: "체크아웃",
-    reloadAvail: "가용 객실 다시 조회",
+    reloadAvail: "예약 가능한 객실 다시 확인",
     nightsRemaining: "{nights}박 · 남은 객실 {count}",
     perNightPrice: "(1박 {price}원)",
     guests: "인원",
     selectRoom: "객실 타입을 선택하세요.",
     noRoom: "선택한 객실이 없습니다.",
-    guestNote: "아래 내용을 호텔 메일로 보냅니다. 답장이 오기 전에는 예약이 완료된 것이 아닙니다. 고등학생·대학생 특별 할인이 있으면 신분을 선택해 주세요.",
+    guestNote:
+      "예약 요청을 제출하시면 호텔에서 객실 가능 여부를 확인한 후 이메일로 안내해 드립니다. 예약은 호텔의 확정 안내를 받으신 후 최종 확정됩니다. 학생 할인 대상에 해당하시면 아래에서 ‘고등학생’ 또는 ‘대학생’을 선택해 주세요. 할인율과 적용 조건은 예약 확정 시 안내하며, 학생증 확인이 필요할 수 있습니다.",
     name: "성명",
     email: "이메일",
     phone: "휴대폰 (선택)",
@@ -186,7 +187,8 @@ export const ko = {
   pages: {
     book: {
       title: "온라인 예약 — {name}",
-      subtitle: "내용을 작성하면 호텔 메일로 전달됩니다. 답장이 오기 전에는 예약이 완료된 것이 아닙니다.",
+      subtitle:
+        "예약 요청을 제출하시면 호텔에서 객실 가능 여부를 확인한 후 이메일로 안내해 드립니다. 예약은 호텔의 확정 안내를 받으신 후 최종 확정됩니다.",
     },
     myReservation: {
       title: "내 예약 — {name}",

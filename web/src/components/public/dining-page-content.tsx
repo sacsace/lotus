@@ -3,7 +3,7 @@
 import { useState } from "react";
 import { useI18n } from "@/components/language-provider";
 import { HotelImage } from "@/components/hotel-image";
-import type { HansikMenuSection } from "@/lib/hansik-menu";
+import { formatHansikPrice, HANSIK_MENU_NOTE, type HansikMenuSection } from "@/lib/hansik-menu";
 import { defaultDiningGallery, HOTEL_IMAGES } from "@/lib/hotel-images";
 
 export function DiningPageContent({
@@ -30,7 +30,7 @@ export function DiningPageContent({
           <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">한식</h1>
         </div>
         <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">
-          아침과 저녁, 정성껏 준비한 한식을 제공합니다. 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다.
+          조식과 석식, 정성껏 준비한 한식을 제공합니다. 따뜻한 밥과 국, 다양한 반찬으로 든든한 한 끼를 준비합니다.
         </p>
         <div className="mt-8">
           <DiningSlideshow images={slides} />
@@ -42,6 +42,7 @@ export function DiningPageContent({
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">04 / Menu</p>
           <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">메뉴</h2>
         </div>
+        <p className="mt-5 max-w-xl text-sm leading-6 text-[#5e676c]">{HANSIK_MENU_NOTE}</p>
         <div className="mt-10 grid gap-x-14 gap-y-12 lg:grid-cols-2">
           {menu.map((section) => (
             <article key={section.title} className={section.wide ? "lg:col-span-2" : undefined}>
@@ -53,7 +54,7 @@ export function DiningPageContent({
                 {section.items.map((item) => (
                   <li key={item.name} className="flex items-baseline justify-between gap-6 border-b border-[#e6ebed] py-2.5 break-inside-avoid">
                     <span className="text-sm">{item.name}</span>
-                    <span className="shrink-0 text-sm tabular-nums text-[#5e676c]">{item.price}</span>
+                    <span className="shrink-0 text-sm tabular-nums text-[#5e676c]">{formatHansikPrice(item.price)}</span>
                   </li>
                 ))}
               </ul>

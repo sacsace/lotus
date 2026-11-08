@@ -29,7 +29,7 @@ export function ContactPageContent({ tenantSlug, phone, email, whatsapp, address
           <p className="text-[11px] tracking-[0.22em] text-[#8b9398]">05 / Contact</p>
           <h1 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">문의</h1>
         </div>
-        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">숙박, 장기 체류, 공항 픽업을 남겨 주세요.</p>
+        <p className="mt-5 max-w-md text-sm leading-6 text-[#5e676c]">숙박, 장기 체류, 공항 픽업에 관한 문의를 남겨 주세요.</p>
         <div className="mt-10 grid items-start gap-12 lg:grid-cols-2">
           <div>
             <div className="border-t border-[#1b1d1f]">

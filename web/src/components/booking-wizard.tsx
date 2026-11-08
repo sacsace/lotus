@@ -120,7 +120,7 @@ export function BookingWizard({ tenantSlug }: Props) {
         : "공항 픽업: 없음",
       note.trim() ? `메모: ${note.trim()}` : "",
       "",
-      "이 메일은 예약 완료가 아닌 요청입니다. 답장으로 안내해 주세요.",
+      "이 메일은 예약 요청입니다. 호텔의 확정 안내를 받기 전에는 예약이 확정된 것이 아닙니다.",
     ]
       .filter(Boolean)
       .join("\n");
@@ -146,7 +146,9 @@ export function BookingWizard({ tenantSlug }: Props) {
 
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8">
-      <p className="text-sm leading-6 text-[#5e676c]">고등학생·대학생 특별 할인이 있습니다. 해당하면 예약 요청에 선택해 주세요.</p>
+      <p className="text-sm leading-6 text-[#5e676c]">
+        학생 할인 대상에 해당하시면 예약 신청 시 학생 구분을 선택해 주세요. 할인율과 적용 조건은 예약 확정 시 안내하며, 학생증 확인이 필요할 수 있습니다.
+      </p>
 
       <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
           <div className="grid gap-4 sm:grid-cols-2">
@@ -373,7 +375,7 @@ export function BookingWizard({ tenantSlug }: Props) {
               요청을 보냈습니다
             </h2>
             <p className="mt-3 text-sm leading-7 text-[#5e676c]">
-              호텔에서 입력하신 메일로 답장을 드립니다. 이 안내는 예약이 완료되었다는 뜻이 아닙니다.
+              호텔에서 객실 가능 여부를 확인한 후 이메일로 안내해 드립니다. 예약은 호텔의 확정 안내를 받으신 후 최종 확정됩니다.
             </p>
             <button type="button" className="mt-6 bg-[#1b1d1f] px-5 py-2.5 text-sm text-white" onClick={() => setSentOpen(false)}>
               확인

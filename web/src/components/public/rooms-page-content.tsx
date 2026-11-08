@@ -6,10 +6,10 @@ import { HotelImage } from "@/components/hotel-image";
 import { roomGalleryForCode } from "@/lib/hotel-images";
 
 const ROOM_INTRO =
-  "출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식, 객실 청소 및 세탁 서비스가 포함되어 있습니다.";
+  "출장과 장기 체류에도 편안하게 머무실 수 있는 객실을 제공합니다. 기본 숙박 요금에는 조식과 석식, 객실 청소 및 일반 세탁 서비스가 포함되어 있습니다.";
 
 const ROOM_DESCRIPTION =
-  "편안한 휴식과 업무를 위한 공간을 갖추고 있습니다. 객실 내 전용 욕실과 업무용 책상, 무료 Wi-Fi 등 투숙에 필요한 편의시설을 제공합니다.";
+  "편안한 휴식과 업무를 위한 공간을 갖추고 있습니다. 객실 내 전용 욕실과 업무용 책상, 무료 Wi-Fi 등 투숙에 필요한 편의시설을 제공합니다. 기본 숙박 요금에는 조식과 석식이 포함됩니다.";
 
 const ROOM_AMENITIES = [
   "킹사이즈 침대",
