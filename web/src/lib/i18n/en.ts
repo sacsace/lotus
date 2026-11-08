@@ -76,7 +76,7 @@ export const en: Dictionary = {
   services: {
     label: "Guest Services",
     title: "Services",
-    subtitle: "We offer a range of services for a comfortable stay. For service inquiries, please contact the front desk.",
+    subtitle: "We offer a range of services for a comfortable stay.\nFor service inquiries, please contact the front desk.",
     needHelp: "Need assistance?",
     needHelpDesc: "Tell the front desk which service you need or what you would like to ask.",
     items: {
