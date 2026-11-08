@@ -2,6 +2,7 @@ import { HomePage } from "@/components/public/home-page";
 import { getHeroImages } from "@/lib/content";
 import { getDiningGalleryUrls } from "@/lib/dining-photos";
 import { prisma } from "@/lib/prisma";
+import { getRoomGalleryUrls } from "@/lib/room-photos";
 import { PAGE_SEO, buildMetadata } from "@/lib/seo";
 import { getTenantBySlug } from "@/lib/tenant";
 import { PUBLIC_ROOM_CODES, sortRoomTypes } from "@/lib/lotus-rooms";
@@ -25,7 +26,7 @@ export default async function TenantHomePage({ params }: Props) {
   const tenant = await getTenantBySlug(tenantSlug);
   if (!tenant) notFound();
 
-  const [heroImages, rooms, diningGallery] = await Promise.all([
+  const [heroImages, roomRows, diningGallery] = await Promise.all([
     getHeroImages(tenant.id),
     prisma.roomType.findMany({
       where: { tenantId: tenant.id, code: { in: [...PUBLIC_ROOM_CODES] } },
@@ -33,11 +34,18 @@ export default async function TenantHomePage({ params }: Props) {
     getDiningGalleryUrls(tenant.id),
   ]);
 
+  const rooms = await Promise.all(
+    sortRoomTypes(roomRows).map(async (room) => ({
+      ...room,
+      gallery: await getRoomGalleryUrls(tenant.id, room.code, room.imageUrl),
+    })),
+  );
+
   return (
     <HomePage
       tenantSlug={tenant.slug}
       heroImages={heroImages}
-      rooms={sortRoomTypes(rooms)}
+      rooms={rooms}
       diningGallery={diningGallery}
       address={tenant.address}
       phone={tenant.phone}
