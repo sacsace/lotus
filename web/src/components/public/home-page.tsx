@@ -72,7 +72,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
                 <div
                   key={slide.url}
                   className={`absolute transition-opacity duration-1000 ease-in-out ${
-                    revealLeft ? "inset-y-0 left-[42%] right-0" : "inset-0"
+                    revealLeft ? "inset-y-0 left-[33.6%] right-0" : "inset-0"
                   } ${i === heroIndex ? "opacity-100" : "opacity-0"}`}
                 >
                   <HotelImage
@@ -89,7 +89,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
               );
             })}
           </div>
-          <div className="absolute inset-y-0 left-0 w-[42%] bg-[#1b1d1f]" />
+          <div className="absolute inset-y-0 left-0 w-[33.6%] bg-[#1b1d1f]" />
           {slides.length > 1 ? (
             <div
               className="absolute bottom-8 right-5 z-20 flex items-center gap-3 sm:right-8"
@@ -118,7 +118,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             </div>
           ) : null}
           <div className="relative z-10 flex h-full min-h-[640px] flex-col px-6 py-8 sm:px-10 sm:py-10">
-            <p className="max-w-[calc(42%-2.5rem)] text-[11px] font-medium leading-snug tracking-[0.1em]">LOTUS KOREAN HOTEL</p>
+            <p className="max-w-[calc(33.6%-2.5rem)] text-[11px] font-medium leading-snug tracking-[0.1em]">LOTUS KOREAN HOTEL</p>
             <div className="mt-auto max-w-xl">
               <div className="mb-5 h-px w-14 bg-white/45" />
               <p className="text-[11px] font-medium tracking-[0.22em] text-white/65">01 /</p>

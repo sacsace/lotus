@@ -120,16 +120,18 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
   const [error, setError] = useState<string | null>(null);
   const [pendingAlt, setPendingAlt] = useState("Lotus Korean Hotel");
   const fileInputRef = useRef<HTMLInputElement | null>(null);
+  const replaceRef = useRef<HTMLInputElement | null>(null);
+  const [replaceId, setReplaceId] = useState<string | null>(null);
   const [urlInput, setUrlInput] = useState("");
 
   async function uploadFile(file: File): Promise<string | null> {
     const fd = new FormData();
     fd.append("file", file);
     fd.append("category", "hero");
-    const res = await fetch("/api/admin/upload", { method: "POST", body: fd });
+    const res = await fetch("/api/admin/upload", { method: "POST", body: fd, credentials: "include" });
     if (!res.ok) {
       const data = await res.json().catch(() => ({}));
-      setError(data.error ?? "Upload failed");
+      setError(data.error ?? "업로드에 실패했습니다.");
       return null;
     }
     const data = await res.json();
@@ -139,11 +141,12 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
   async function addHero(url: string, alt: string) {
     const res = await fetch("/api/admin/content", {
       method: "PATCH",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "hero-add", url, alt }),
     });
     if (!res.ok) {
-      setError("Failed to add hero image");
+      setError("히어로 사진을 추가하지 못했습니다.");
       return false;
     }
     return true;
@@ -175,34 +178,51 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
     setBusy(false);
   }
 
-  async function handleUpdate(asset: HeroAsset, patch: Partial<Pick<HeroAsset, "alt" | "sortOrder">>) {
+  async function handleUpdate(asset: HeroAsset, patch: Partial<Pick<HeroAsset, "alt" | "sortOrder" | "url">>) {
     setBusy(true);
     setError(null);
     const res = await fetch("/api/admin/content", {
       method: "PATCH",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "hero-update", id: asset.id, ...patch }),
     });
     setBusy(false);
     if (!res.ok) {
-      setError("Failed to update");
+      setError("수정에 실패했습니다.");
       return;
     }
     onChanged();
   }
 
+  async function handleReplace(e: React.ChangeEvent<HTMLInputElement>) {
+    const file = e.target.files?.[0];
+    if (!file || !replaceId) return;
+    const asset = assets.find((item) => item.id === replaceId);
+    setBusy(true);
+    setError(null);
+    const url = await uploadFile(file);
+    if (url && asset) {
+      await handleUpdate(asset, { url });
+    }
+    setReplaceId(null);
+    if (replaceRef.current) replaceRef.current.value = "";
+    setBusy(false);
+  }
+
   async function handleDelete(asset: HeroAsset) {
-    if (!confirm("Remove this hero image?")) return;
+    if (!confirm("이 히어로 사진을 삭제할까요?")) return;
     setBusy(true);
     setError(null);
     const res = await fetch("/api/admin/content", {
       method: "PATCH",
+      credentials: "include",
       headers: { "Content-Type": "application/json" },
       body: JSON.stringify({ type: "hero-delete", id: asset.id }),
     });
     setBusy(false);
     if (!res.ok) {
-      setError("Failed to delete");
+      setError("삭제에 실패했습니다.");
       return;
     }
     onChanged();
@@ -212,10 +232,10 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
     <section className="rounded-2xl bg-card p-6 shadow-luxury">
       <div className="flex items-center justify-between gap-4">
         <div>
-          <h2 className="font-semibold">Hero Images (Home Slider)</h2>
+          <h2 className="font-semibold">히어로 이미지 (홈 슬라이드)</h2>
           <p className="mt-1 text-xs text-muted">
-            Images shown on the public home page slider. PNG / JPG / WebP, max 8MB. Lower sort order shows first.
-            If no custom images are set, default photos are used.
+            홈 페이지 슬라이드에 표시됩니다. PNG / JPG / WebP, 최대 8MB. 순서가 작을수록 먼저 보입니다.
+            사진 교체로 기존 이미지를 바꿀 수 있고, 설명·순서는 수정 후 포커스를 벗어나면 저장됩니다.
           </p>
         </div>
       </div>
@@ -225,16 +245,19 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
       <div className="mt-6 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
         {assets.length === 0 && (
           <p className="col-span-full rounded-lg bg-stone-50 p-6 text-center text-sm text-muted dark:bg-stone-900/30">
-            No custom hero images. Default site images are being used.
+            등록된 히어로 사진이 없습니다. 기본 이미지가 공개 페이지에 표시됩니다.
           </p>
         )}
-        {assets.map((asset) => (
+        {assets.map((asset, index) => (
           <div key={asset.id} className="flex flex-col overflow-hidden rounded-xl border bg-background">
             <div className="relative aspect-[16/9] w-full bg-stone-100">
               <Image src={asset.url} alt={asset.alt ?? ""} fill className="object-cover" sizes="400px" unoptimized />
+              <span className="absolute left-2 top-2 rounded bg-black/70 px-2 py-0.5 text-[11px] text-white">
+                {String(index + 1).padStart(2, "0")} / {String(assets.length).padStart(2, "0")}
+              </span>
             </div>
             <div className="flex flex-col gap-2 p-3">
-              <label className="text-[11px] uppercase tracking-wide text-muted">Alt text</label>
+              <label className="text-[11px] uppercase tracking-wide text-muted">설명</label>
               <input
                 defaultValue={asset.alt ?? ""}
                 onBlur={(e) => {
@@ -245,7 +268,7 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
                 className="rounded-lg border px-2 py-1 text-sm"
               />
               <div className="flex items-center gap-2">
-                <label className="text-[11px] uppercase tracking-wide text-muted">Order</label>
+                <label className="text-[11px] uppercase tracking-wide text-muted">순서</label>
                 <input
                   type="number"
                   defaultValue={asset.sortOrder}
@@ -257,13 +280,26 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
                   }}
                   className="w-20 rounded-lg border px-2 py-1 text-sm"
                 />
+              </div>
+              <div className="mt-1 flex flex-wrap gap-2">
+                <button
+                  type="button"
+                  disabled={busy}
+                  onClick={() => {
+                    setReplaceId(asset.id);
+                    replaceRef.current?.click();
+                  }}
+                  className="rounded-full border px-3 py-1 text-xs hover:bg-stone-50"
+                >
+                  사진 교체
+                </button>
                 <button
                   type="button"
                   onClick={() => void handleDelete(asset)}
                   disabled={busy}
-                  className="ml-auto rounded-full border border-red-300 px-3 py-1 text-xs text-red-700 hover:bg-red-50"
+                  className="rounded-full border border-red-300 px-3 py-1 text-xs text-red-700 hover:bg-red-50"
                 >
-                  Delete
+                  삭제
                 </button>
               </div>
               <p className="break-all text-[11px] text-muted">{asset.url}</p>
@@ -273,12 +309,12 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
       </div>
 
       <div className="mt-6 grid gap-3 rounded-xl border border-dashed bg-stone-50/50 p-4 dark:bg-stone-900/30">
-        <p className="text-sm font-medium">Add new hero image</p>
+        <p className="text-sm font-medium">히어로 사진 추가</p>
         <div className="grid gap-3 sm:grid-cols-[1fr_auto]">
           <input
             value={pendingAlt}
             onChange={(e) => setPendingAlt(e.target.value)}
-            placeholder="Alt text (description)"
+            placeholder="사진 설명"
             className="rounded-lg border bg-background px-3 py-2 text-sm"
           />
           <input
@@ -294,19 +330,27 @@ function HeroImagesSection({ assets, onChanged }: { assets: HeroAsset[]; onChang
           <input
             value={urlInput}
             onChange={(e) => setUrlInput(e.target.value)}
-            placeholder="Or paste image URL (e.g. /images/hotel/lobby-wide.png)"
+            placeholder="또는 이미지 주소 붙여넣기 (예: /images/hotel/lobby-wide.png)"
             className="rounded-lg border bg-background px-3 py-2 text-sm"
           />
           <button
             type="button"
             disabled={busy || !urlInput.trim()}
             onClick={() => void handleAddByUrl()}
-            className="rounded-full bg-charcoal px-5 py-2 text-sm text-white disabled:opacity-50 dark:bg-gold dark:text-charcoal"
+            className="rounded-lg bg-[#1b1d1f] px-5 py-2 text-sm text-white disabled:opacity-50"
           >
-            Add by URL
+            주소로 추가
           </button>
         </div>
       </div>
+
+      <input
+        ref={replaceRef}
+        type="file"
+        accept="image/png,image/jpeg,image/webp,image/gif"
+        className="hidden"
+        onChange={(e) => void handleReplace(e)}
+      />
     </section>
   );
 }

@@ -1,7 +1,9 @@
 import { NextResponse } from "next/server";
+import { revalidatePath } from "next/cache";
 import { prisma } from "@/lib/prisma";
 import { requirePermission } from "@/lib/admin-api";
 import { logAdminAction } from "@/lib/audit";
+import { tryDeleteUpload } from "@/lib/uploads";
 
 export async function GET() {
   const session = await requirePermission("content:view");
@@ -95,27 +97,45 @@ export async function PATCH(req: Request) {
       },
     });
     await logAdminAction({ adminUserId: session.sub, tenantId: tenant.id, action: "HERO_ADD", resource: created.id, details: JSON.stringify(body) });
+    revalidatePath(`/${tenant.slug}`);
     return NextResponse.json({ ok: true, asset: created });
   }
 
   if (body.type === "hero-update") {
     if (!body.id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
+    const existing = await prisma.mediaAsset.findFirst({
+      where: { id: body.id, tenantId: tenant.id, category: "hero" },
+    });
+    if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+
+    const nextUrl = typeof body.url === "string" && body.url.trim() ? body.url.trim() : undefined;
+    if (nextUrl && nextUrl !== existing.url) {
+      await tryDeleteUpload(existing.url);
+    }
+
     const updated = await prisma.mediaAsset.update({
-      where: { id: body.id },
+      where: { id: existing.id },
       data: {
-        alt: body.alt ?? undefined,
+        alt: typeof body.alt === "string" ? body.alt : undefined,
         sortOrder: typeof body.sortOrder === "number" ? body.sortOrder : undefined,
-        url: body.url ?? undefined,
+        url: nextUrl,
       },
     });
     await logAdminAction({ adminUserId: session.sub, tenantId: tenant.id, action: "HERO_UPDATE", resource: updated.id, details: JSON.stringify(body) });
+    revalidatePath(`/${tenant.slug}`);
     return NextResponse.json({ ok: true, asset: updated });
   }
 
   if (body.type === "hero-delete") {
     if (!body.id) return NextResponse.json({ error: "Missing id" }, { status: 400 });
-    await prisma.mediaAsset.delete({ where: { id: body.id } });
+    const existing = await prisma.mediaAsset.findFirst({
+      where: { id: body.id, tenantId: tenant.id, category: "hero" },
+    });
+    if (!existing) return NextResponse.json({ error: "Not found" }, { status: 404 });
+    await prisma.mediaAsset.delete({ where: { id: existing.id } });
+    await tryDeleteUpload(existing.url);
     await logAdminAction({ adminUserId: session.sub, tenantId: tenant.id, action: "HERO_DELETE", resource: body.id, details: JSON.stringify(body) });
+    revalidatePath(`/${tenant.slug}`);
     return NextResponse.json({ ok: true });
   }
 

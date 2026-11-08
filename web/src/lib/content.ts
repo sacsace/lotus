@@ -22,11 +22,11 @@ export async function getHeroImages(tenantId: string): Promise<{ url: string; al
     where: { tenantId, category: "hero" },
     orderBy: { sortOrder: "asc" },
   });
-  const fromDb = assets.map((a) => ({ url: a.url, alt: a.alt ?? "Lotus Korean Hotel" }));
-  const defaults = DEFAULT_HERO_IMAGES.map((h) => ({ url: h.url, alt: h.alt }));
-  if (fromDb.length === 0) return defaults;
-  const seen = new Set(fromDb.map((h) => h.url));
-  return [...fromDb, ...defaults.filter((h) => !seen.has(h.url))];
+  if (assets.length > 0) {
+    // Admin-managed list is the source of truth so replacements are not mixed with defaults.
+    return assets.map((a) => ({ url: a.url, alt: a.alt ?? "Lotus Korean Hotel" }));
+  }
+  return DEFAULT_HERO_IMAGES.map((h) => ({ url: h.url, alt: h.alt }));
 }
 
 export const DEFAULT_HERO_IMAGES = HOTEL_IMAGES.hero;
