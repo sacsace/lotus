@@ -28,8 +28,18 @@ export const OG_LOCALES = {
 } as const;
 
 export function getSiteUrl() {
-  // Production serves on www; apex (hotellotus.in) is not on Railway and returns 404 for many paths.
-  return (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.hotellotus.in").replace(/\/$/, "");
+  // Production only serves on www. Apex hotellotus.in is on a different host and returns 404,
+  // so sitemap/canonical/robots must never advertise non-www URLs (that blocks Google indexing).
+  const raw = (process.env.NEXT_PUBLIC_SITE_URL ?? "https://www.hotellotus.in").trim().replace(/\/$/, "");
+  try {
+    const url = new URL(raw.includes("://") ? raw : `https://${raw}`);
+    if (url.hostname === "hotellotus.in") {
+      url.hostname = "www.hotellotus.in";
+    }
+    return url.origin;
+  } catch {
+    return "https://www.hotellotus.in";
+  }
 }
 
 export function absoluteUrl(path = "/") {
