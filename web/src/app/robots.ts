@@ -4,15 +4,22 @@ import { getSiteUrl } from "@/lib/seo";
 export default function robots(): MetadataRoute.Robots {
   const base = getSiteUrl();
   const host = new URL(base).host;
+  const disallow = ["/admin", "/admin/", "/api/", "/api"];
+
   return {
     rules: [
+      // Naver crawler (Yeti) — explicit allow helps Search Advisor validation.
+      {
+        userAgent: "Yeti",
+        allow: "/",
+        disallow,
+      },
       {
         userAgent: "*",
         allow: "/",
-        disallow: ["/admin", "/admin/", "/api/", "/api"],
+        disallow,
       },
     ],
-    // Hostname only (no scheme). Must match the live www host Google can crawl.
     host,
     sitemap: `${base}/sitemap.xml`,
   };

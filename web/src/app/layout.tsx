@@ -52,6 +52,13 @@ export const metadata: Metadata = {
   category: "travel",
   formatDetection: { telephone: true, email: true, address: true },
   robots: { index: true, follow: true },
+  verification: {
+    other: {
+      "naver-site-verification":
+        process.env.NEXT_PUBLIC_NAVER_SITE_VERIFICATION?.trim() ||
+        "b020d60eb1d7eec3d81135f3048b025994f9ad1f",
+    },
+  },
   alternates: {
     canonical: siteUrl,
     languages: languageAlternates("/"),
