@@ -152,10 +152,12 @@ export function BookingWizard({ tenantSlug }: Props) {
     ["university", t.booking.studentUniversity],
   ] as const;
 
+  function roomLabel(nameKo: string) {
+    return /^guest\s*room$/i.test(nameKo.trim()) ? t.rooms.publicName : nameKo;
+  }
+
   return (
     <div className="mx-auto w-full max-w-4xl space-y-8">
-      <p className="text-sm leading-6 text-[#5e676c]">{t.booking.studentHint}</p>
-
       <div className="space-y-4 rounded-xl border border-stone-200 bg-white p-6 shadow-sm sm:p-8">
         <div className="grid gap-4 sm:grid-cols-2">
           <div>
@@ -201,7 +203,7 @@ export function BookingWizard({ tenantSlug }: Props) {
                   onChange={() => setSelectedId(r.id)}
                 />
                 <div>
-                  <p className="font-medium text-stone-900">{r.nameKo}</p>
+                  <p className="font-medium text-stone-900">{roomLabel(r.nameKo)}</p>
                 </div>
               </div>
             </label>
@@ -231,7 +233,6 @@ export function BookingWizard({ tenantSlug }: Props) {
             />
           </div>
         </div>
-        <p className="text-sm text-stone-600">{t.booking.guestNote}</p>
         <div>
           <label className="text-sm font-medium text-stone-700">{t.booking.name}</label>
           <input
@@ -320,7 +321,8 @@ export function BookingWizard({ tenantSlug }: Props) {
         </fieldset>
         <fieldset>
           <legend className="text-sm font-medium text-stone-700">{t.booking.studentDiscount}</legend>
-          <div className="mt-2 flex flex-wrap gap-2">
+          <p className="mt-2 text-sm leading-6 text-[#5e676c]">{t.booking.studentHint}</p>
+          <div className="mt-3 flex flex-wrap gap-2">
             {studentOptions.map(([value, label]) => (
               <button
                 key={value}

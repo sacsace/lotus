@@ -1,6 +1,7 @@
 "use client";
 
 import Link from "next/link";
+import { useI18n } from "@/components/language-provider";
 
 type Props = {
   tenantSlug: string;
@@ -11,21 +12,22 @@ type Props = {
 };
 
 export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Props) {
+  const { t } = useI18n();
   const year = new Date().getFullYear();
   const p = `/${tenantSlug}`;
   const links = [
-    { href: p, label: "호텔" },
-    { href: `${p}/rooms`, label: "객실" },
-    { href: `${p}/dining`, label: "다이닝" },
-    { href: `${p}/services`, label: "서비스" },
-    { href: `${p}/contact`, label: "문의" },
-    { href: `${p}/book`, label: "예약" },
+    { href: p, label: t.footer.hotel },
+    { href: `${p}/rooms`, label: t.nav.rooms },
+    { href: `${p}/dining`, label: t.nav.dining },
+    { href: `${p}/services`, label: t.nav.services },
+    { href: `${p}/contact`, label: t.nav.contact },
+    { href: `${p}/book`, label: t.nav.book },
   ];
   const family = [
-    { href: "https://www.mvsystem.in", label: "업무 통합 시스템 MVS" },
-    { href: "https://www.heresnow.in", label: "GPS 기반 출퇴근 기록 시스템 HeresNow" },
-    { href: "https://www.neocle.in", label: "수출입 전문기업 Neocle" },
-    { href: "https://www.msventures.in", label: "비즈니스 컨설팅 MSV" },
+    { href: "https://www.mvsystem.in", label: t.footer.familyMvs },
+    { href: "https://www.heresnow.in", label: t.footer.familyHeresnow },
+    { href: "https://www.neocle.in", label: t.footer.familyNeocle },
+    { href: "https://www.msventures.in", label: t.footer.familyMsv },
   ];
 
   return (
@@ -43,7 +45,7 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
         {[phone, email, address].filter(Boolean).join(" · ")}
       </p>
       <div className="mx-auto mt-8 max-w-3xl">
-        <p className="text-[11px] tracking-[0.18em] text-[#1b1d1f]/45">관련 사이트</p>
+        <p className="text-[11px] tracking-[0.18em] text-[#1b1d1f]/45">{t.footer.relatedSites}</p>
         <ul className="mt-3 flex flex-col items-center gap-2 text-sm text-[#1b1d1f]/70">
           {family.map((site) => (
             <li key={site.href}>
@@ -60,7 +62,9 @@ export function SiteFooter({ tenantSlug, brandName, phone, email, address }: Pro
           Minsub Ventures
         </a>
       </p>
-      <p className="mt-2 text-xs tracking-[0.18em] text-[#1b1d1f]/45">© {year} {brandName}</p>
+      <p className="mt-2 text-xs tracking-[0.18em] text-[#1b1d1f]/45">
+        © {year} {brandName}
+      </p>
     </footer>
   );
 }

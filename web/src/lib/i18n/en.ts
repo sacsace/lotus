@@ -61,11 +61,11 @@ export const en: Dictionary = {
     checkAvailability: "Check availability",
     prevPhoto: "Previous photo",
     nextPhoto: "Next photo",
-    diningHeadline: "Korean meals prepared with care for breakfast and dinner",
+    diningHeadline: "Thoughtfully prepared Korean meals for breakfast and dinner",
     diningBody: "Warm rice, soup, and a variety of banchan for a satisfying meal. Ask us about group dining when you book.",
     noteAirportTitle: "Airport pickup",
     noteAirportText:
-      "Airport pickup is USD 27 per vehicle. Share your arrival time and flight details, and we will take you from the airport to the hotel.",
+      "Airport pickup is USD 27 per vehicle one way. Extra vehicles may be needed depending on passengers and luggage. Share your arrival time and flight details, and we will take you from the airport to the hotel.",
     noteWorkTitle: "Work-friendly rooms",
     noteWorkText: "A desk and Wi-Fi in every room make it easy to work during your business trip.",
     noteLongstayTitle: "Long stay",
@@ -78,28 +78,28 @@ export const en: Dictionary = {
     eyebrow: "02 / Rooms",
     subtitle: "Comfortable rooms for Korean business travelers — Smart TV, WiFi, work desk, and long-stay support.",
     intro:
-      "Comfortable rooms for business trips and longer stays. Basic rates include breakfast and dinner, housekeeping, and regular laundry.",
+      "Stay comfortably during business trips or longer stays. Basic rates include breakfast and dinner, room cleaning, and regular laundry.",
     guideTitle: "Room information",
     bookInquiry: "Booking inquiry",
     description:
       "Space for rest and work, with a private bathroom, work desk, free Wi-Fi, and other essentials. Breakfast and dinner are included in the basic rate.",
-    note: "Facilities and layouts may vary by room. Please confirm when booking.",
+    note: "Facilities, bed setup, and layouts may vary by room. Please confirm when booking. For long stays, contact us separately.",
     viewMore: "View more rooms",
     bookRoom: "Book this room",
     alt: "Room",
+    publicName: "Room",
     amenities: [
-      "King-size bed",
-      "Living space",
+      "Bed setup confirmed at booking",
+      "Relaxation space",
       "Private bathroom",
       "Air conditioning",
       "Smart TV",
       "Free Wi-Fi",
       "Work desk",
       "Electric kettle",
-      "Daily housekeeping",
-      "Free laundry service",
-      "Room service",
-      "Long-stay consultation",
+      "Daily room cleaning",
+      "Regular laundry included",
+      "In-room meal delivery",
     ],
   },
   dining: {
@@ -108,7 +108,7 @@ export const en: Dictionary = {
     eyebrow: "03 / Dining",
     subtitle: "Authentic Korean breakfast and dinner — daily menu updated by our culinary team.",
     pageIntro:
-      "Carefully prepared Korean breakfast and dinner. Warm rice, soup, and a variety of banchan for a satisfying meal.",
+      "Thoughtfully prepared Korean meals for breakfast and dinner. Warm rice, soup, and a variety of banchan for a satisfying meal.",
     breakfast: "Korean Breakfast",
     dinner: "Korean Dinner",
     todayMenu: "Meal composition",
@@ -116,7 +116,8 @@ export const en: Dictionary = {
     photoAlt: "Dining photo {n}",
     menuEyebrow: "04 / Menu",
     menuTitle: "Menu",
-    menuNote: "Prices are in INR and exclude GST. The menu may change depending on ingredient availability.",
+    menuNote:
+      "Breakfast and dinner included in your stay are separate from the à la carte menu below. À la carte items are charged additionally. Prices are in INR and exclude GST.",
     viewAll: "View all",
     close: "Close",
     galleryCount: "{count} photos",
@@ -131,7 +132,7 @@ export const en: Dictionary = {
     items: {
       airport: {
         title: "Airport Pickup",
-        desc: "Airport pickup is USD 27 per vehicle. Share your flight and arrival time in advance, and we will arrange a car.",
+        desc: "Airport pickup is USD 27 per vehicle one way. Extra vehicles may be needed depending on passengers and luggage. Share your flight and arrival time in advance, and we will arrange a car.",
       },
       laundry: {
         title: "Laundry",
@@ -139,7 +140,7 @@ export const en: Dictionary = {
       },
       netflix: {
         title: "Netflix",
-        desc: "You can watch Netflix in your room. Sign in with your personal account.",
+        desc: "You can sign in with your personal account and watch Netflix on the room TV.",
       },
       frro: {
         title: "FRRO Support",
@@ -155,18 +156,18 @@ export const en: Dictionary = {
       },
       homestay: {
         title: "Homestay",
-        desc: "Ask the front desk if you would like a homestay. We will check availability and dates for you.",
+        desc: "If you prefer residential-style lodging instead of a hotel room, we can advise on homestay options. Ask the front desk about availability and dates.",
       },
       corporate: {
         title: "Corporate Guests",
         desc: "We provide tailored consultation and booking support for business trips and group reservations.",
       },
       housekeeping: {
-        title: "Housekeeping",
+        title: "Room Cleaning",
         desc: "We clean the room daily and replenish amenities as needed.",
       },
       transport: {
-        title: "Transportation",
+        title: "Vehicle Booking Support",
         desc: "We help arrange local transport and cars for business travel.",
       },
     },
@@ -174,24 +175,30 @@ export const en: Dictionary = {
   contact: {
     label: "Get in Touch",
     title: "Contact Us",
-    subtitle: "Reservations, long-stay inquiries, airport pickup, and corporate bookings.",
+    subtitle: "Inquire about room bookings, long stays, airport pickup, and corporate or group reservations.",
     infoTitle: "Contact Information",
     phone: "Phone",
     email: "Email",
     address: "Address",
     whatsapp: "WhatsApp",
     formTitle: "Send an Inquiry",
-    formSubtitle: "We will reply to your inquiry within 24 hours.",
+    formSubtitle: "We review inquiries in order and reply as soon as we can. For urgent matters, please call or message us on WhatsApp.",
   },
   footer: {
     explore: "Explore",
+    hotel: "Hotel",
     contact: "Contact",
+    relatedSites: "Related sites",
     operations: "Operations",
     operationsDesc: "MVS-integrated hospitality platform for real business operations.",
     staffLogin: "Staff Login",
     copyright: "Comfortable Korean hospitality in India.",
     brandDesc:
       "Korean business hotel in Bengaluru — for corporate travelers and long-stay guests.",
+    familyMvs: "Business integration system MVS",
+    familyHeresnow: "GPS attendance system HeresNow",
+    familyNeocle: "Import-export specialist Neocle",
+    familyMsv: "Business consulting MSV",
   },
   inquiry: {
     subject: "Subject",
@@ -209,24 +216,26 @@ export const en: Dictionary = {
     step3: "3. Email request",
     checkIn: "Check-in",
     checkOut: "Check-out",
-    reloadAvail: "Check available rooms again",
+    reloadAvail: "Check availability",
     nightsRemaining: "{nights} nights · {count} available",
     perNightPrice: "(₹{price} per night)",
-    guests: "Guests",
+    guests: "Total guests",
     roomCount: "Rooms",
     selectRoom: "Please select a room type.",
     noRoom: "No room selected or unavailable.",
+    processNote:
+      "Submit a booking request and we will email you about availability and rates. Your reservation is complete once you receive the hotel’s confirmation.",
     studentHint:
-      "If you qualify for a student discount, select your student category when booking. Discount rates and terms are shared when the booking is confirmed, and a student ID may be required.",
+      "To request a student discount, select High school or University. We will share discount eligibility and rates before confirmation, and may ask for a student ID.",
     guestNote:
-      "After you submit a booking request, the hotel will check availability and email you. Your stay is confirmed only after you receive the hotel’s confirmation. If you qualify for a student discount, select High school or University below. Discount rates and terms are shared when the booking is confirmed, and a student ID may be required.",
+      "Submit a booking request and we will email you about availability and rates. Your reservation is complete once you receive the hotel’s confirmation.",
     name: "Full name",
     email: "Email",
     phone: "Phone (optional)",
     airportPickup: "Airport pickup",
     pickupNone: "Not needed",
     pickupRequest: "Request pickup",
-    pickupPrice: "USD 27 per vehicle.",
+    pickupPrice: "USD 27 per vehicle one way. Extra vehicles may be needed depending on passengers and luggage.",
     arrivalTime: "Arrival time",
     flightNumber: "Flight number",
     vehicleCount: "Vehicles",
@@ -234,7 +243,7 @@ export const en: Dictionary = {
     studentNone: "Not applicable",
     studentHighschool: "High school",
     studentUniversity: "University",
-    note: "Memo",
+    note: "Special requests",
     notePlaceholder: "Add details needed for your schedule or discount confirmation.",
     sending: "Sending…",
     create: "Send booking request",
@@ -250,7 +259,7 @@ export const en: Dictionary = {
     errVehicles: "Please enter the number of vehicles needed.",
     sentTitle: "Request sent",
     sentBody:
-      "The hotel will check availability and email you. Your stay is confirmed only after you receive the hotel’s confirmation.",
+      "We will email you about availability and rates. Your reservation is complete once you receive the hotel’s confirmation.",
     sentConfirm: "OK",
   },
   reservationLookup: {
@@ -264,7 +273,7 @@ export const en: Dictionary = {
     book: {
       title: "Online booking",
       subtitle:
-        "After you submit a booking request, the hotel will check availability and email you. Your stay is confirmed only after you receive the hotel’s confirmation.",
+        "Submit a booking request and we will email you about availability and rates. Your reservation is complete once you receive the hotel’s confirmation.",
     },
     myReservation: {
       title: "My reservation — {name}",

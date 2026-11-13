@@ -258,7 +258,7 @@ export function HomePage({ tenantSlug, heroImages, rooms, diningGallery, address
             <h2 className="text-5xl font-bold leading-none tracking-[-0.06em] sm:text-7xl">{t.rooms.title}</h2>
           </div>
           <p className="mt-5 max-w-xl whitespace-pre-line break-keep text-sm leading-6 text-[#5e676c]">
-            {`${t.rooms.intro}\n${t.booking.studentHint}`}
+            {t.rooms.intro}
           </p>
           <div className="mt-10 space-y-14">
             {roomCards.map((room, i) => {

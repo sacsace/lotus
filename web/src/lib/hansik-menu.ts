@@ -10,16 +10,61 @@ export type HansikMenuSection = {
 };
 
 export const HANSIK_MENU_NOTE =
-  "가격은 인도 루피(INR) 기준이며, GST는 별도입니다.";
+  "숙박 요금에 포함된 조식·석식과 아래 별도 주문 메뉴는 구분됩니다. 별도 주문 메뉴는 추가 요금이 부과됩니다. 가격은 인도 루피(INR) 기준이며, GST는 별도입니다.";
+
+/** Fix legacy typos / labels that may still be stored in SiteContent. */
+const SECTION_TITLE_FIXES: Record<string, string> = {
+  접시요리: "일품요리",
+  밥류: "식사류",
+};
+
+const ITEM_NAME_FIXES: Record<string, string> = {
+  "모듬 해물 찜": "모둠 해물찜",
+  "모듬 해물찜": "모둠 해물찜",
+  "모둠 해물 찜": "모둠 해물찜",
+  만두국: "만둣국",
+  깐소새우: "깐쇼새우",
+  "후라이드 치킨": "프라이드치킨",
+  후라이드치킨: "프라이드치킨",
+  "두부 김치": "두부김치",
+  "소갈비 찜": "소갈비찜",
+  "돼지갈비 찜": "돼지갈비찜",
+  "김치 찜 (돼지/닭)": "김치찜(돼지고기/닭고기)",
+  "김치찜(돼지/닭)": "김치찜(돼지고기/닭고기)",
+  "골뱅이소면 무침": "골뱅이무침과 소면",
+  "탕수육 (치킨)": "닭고기 탕수육",
+  탕수육: "닭고기 탕수육",
+  "참치+연어회": "참치·연어 모둠회",
+  "백숙 (2인/예약)": "백숙(2인분 · 사전 예약)",
+  "백숙(2인분·사전 예약)": "백숙(2인분 · 사전 예약)",
+  "삼계탕(2인분·사전 예약)": "삼계탕(2인분 · 사전 예약)",
+  "감자탕(2인분·사전 예약)": "감자탕(2인분 · 사전 예약)",
+  "안동찜닭(2인분·사전 예약)": "안동찜닭(2인분 · 사전 예약)",
+  "닭발(2인분·사전 예약)": "닭발(2인분 · 사전 예약)",
+  삼겹살: "삼겹살 (1인분)",
+  "양념 돼지갈비 구이": "양념 돼지갈비 구이 (1인분)",
+  "장어 구이": "장어 구이 (1인분)",
+  소주: "소주 (병)",
+  맥주: "맥주 (병)",
+  와인: "와인 (병)",
+  콜라: "콜라 (캔)",
+  스프라이트: "스프라이트 (캔)",
+  "페리에 소다": "페리에 소다 (병)",
+};
+
+const ITEM_PRICE_FIXES: Record<string, string> = {
+  "H ₹600 / F ₹900": "반 마리 ₹600 / 한 마리 ₹900",
+  "H 600 / F 900": "반 마리 600 / 한 마리 900",
+};
 
 export const HANSIK_MENU: HansikMenuSection[] = [
   {
     index: "01",
     title: "BBQ",
     items: [
-      { name: "삼겹살", price: "1000" },
-      { name: "양념 돼지갈비 구이", price: "1200" },
-      { name: "장어 구이", price: "1000" },
+      { name: "삼겹살 (1인분)", price: "1000" },
+      { name: "양념 돼지갈비 구이 (1인분)", price: "1200" },
+      { name: "장어 구이 (1인분)", price: "1000" },
     ],
   },
   {
@@ -54,9 +99,9 @@ export const HANSIK_MENU: HansikMenuSection[] = [
       { name: "갈비탕", price: "700" },
       { name: "육개장", price: "700" },
       { name: "설렁탕", price: "700" },
-      { name: "백숙(2인분·사전 예약)", price: "1000" },
-      { name: "삼계탕(2인분·사전 예약)", price: "1200" },
-      { name: "감자탕(2인분·사전 예약)", price: "700" },
+      { name: "백숙(2인분 · 사전 예약)", price: "1000" },
+      { name: "삼계탕(2인분 · 사전 예약)", price: "1200" },
+      { name: "감자탕(2인분 · 사전 예약)", price: "700" },
     ],
   },
   {
@@ -64,7 +109,7 @@ export const HANSIK_MENU: HansikMenuSection[] = [
     title: "일품요리",
     wide: true,
     items: [
-      { name: "골뱅이소면 무침", price: "1200" },
+      { name: "골뱅이무침과 소면", price: "1200" },
       { name: "소고기 불고기", price: "900" },
       { name: "돼지 불고기", price: "800" },
       { name: "두부김치", price: "800" },
@@ -81,15 +126,15 @@ export const HANSIK_MENU: HansikMenuSection[] = [
       { name: "양념 치킨", price: "반 마리 700 / 한 마리 1000" },
       { name: "반반 치킨", price: "1000" },
       { name: "치킨윙 (6조각)", price: "500" },
-      { name: "안동찜닭(2인분·사전 예약)", price: "800" },
-      { name: "닭발(2인분·사전 예약)", price: "1200" },
+      { name: "안동찜닭(2인분 · 사전 예약)", price: "800" },
+      { name: "닭발(2인분 · 사전 예약)", price: "1200" },
       { name: "군만두 (야채/김치/고기)", price: "300 / 400 / 400" },
       { name: "감자전", price: "600" },
       { name: "김치전", price: "600" },
       { name: "해물파전", price: "900" },
       { name: "참치회", price: "2000" },
       { name: "연어회", price: "2500" },
-      { name: "참치+연어회", price: "2500" },
+      { name: "참치·연어 모둠회", price: "2500" },
     ],
   },
   {
@@ -127,12 +172,12 @@ export const HANSIK_MENU: HansikMenuSection[] = [
     index: "08",
     title: "음료",
     items: [
-      { name: "소주", price: "900" },
-      { name: "맥주", price: "500" },
-      { name: "와인", price: "2300" },
-      { name: "콜라", price: "150" },
-      { name: "스프라이트", price: "150" },
-      { name: "페리에 소다", price: "250" },
+      { name: "소주 (병)", price: "900" },
+      { name: "맥주 (병)", price: "500" },
+      { name: "와인 (병)", price: "2300" },
+      { name: "콜라 (캔)", price: "150" },
+      { name: "스프라이트 (캔)", price: "150" },
+      { name: "페리에 소다 (병)", price: "250" },
     ],
   },
 ];
@@ -142,6 +187,15 @@ export function formatHansikPrice(price: string): string {
   const value = price.trim();
   if (!value || value.includes("₹")) return value;
   return value.replace(/\d{3,}/g, (digits) => `₹${Number(digits).toLocaleString("en-IN")}`);
+}
+
+function polishSection(section: HansikMenuSection): HansikMenuSection {
+  const title = SECTION_TITLE_FIXES[section.title] ?? section.title;
+  const items = section.items.map((item) => ({
+    name: ITEM_NAME_FIXES[item.name] ?? item.name,
+    price: ITEM_PRICE_FIXES[item.price] ?? item.price,
+  }));
+  return { ...section, title, items };
 }
 
 export function normalizeHansikMenu(input: unknown): HansikMenuSection[] | null {
@@ -162,12 +216,14 @@ export function normalizeHansikMenu(input: unknown): HansikMenuSection[] | null 
         items.push({ name, price });
       }
     }
-    sections.push({
-      index: String(sections.length + 1).padStart(2, "0"),
-      title,
-      wide: Boolean((section as { wide?: unknown }).wide),
-      items,
-    });
+    sections.push(
+      polishSection({
+        index: String(sections.length + 1).padStart(2, "0"),
+        title,
+        wide: Boolean((section as { wide?: unknown }).wide),
+        items,
+      }),
+    );
   }
   return sections;
 }
